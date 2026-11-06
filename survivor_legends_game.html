@@ -1,0 +1,2243 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>倖存者傳說 - Survivor Legends</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { user-select: none; -webkit-user-select: none; touch-action: manipulation; font-family: 'Outfit', sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { background-color: #090d16; color: #f3f4f6; overflow-x: hidden; }
+        .glow-text { text-shadow: 0 0 12px rgba(99, 102, 241, 0.8), 0 0 24px rgba(168, 85, 247, 0.5); }
+        .card-glass { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .gacha-card-legendary { background: linear-gradient(135deg, #f59e0b, #b45309); box-shadow: 0 0 25px rgba(245, 158, 11, 0.6); border: 2px solid #fbbf24; }
+        .gacha-card-epic { background: linear-gradient(135deg, #a855f7, #6b21a8); box-shadow: 0 0 20px rgba(168, 85, 247, 0.5); border: 2px solid #c084fc; }
+        .gacha-card-rare { background: linear-gradient(135deg, #3b82f6, #1d4ed8); box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); border: 2px solid #60a5fa; }
+        .gacha-card-common { background: linear-gradient(135deg, #4b5563, #1f2937); border: 1px solid #6b7280; }
+        @keyframes pulse-glow { 0%, 100% { opacity: 0.8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.03); } }
+        .animate-glow { animation: pulse-glow 2s infinite ease-in-out; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #111827; }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+        @keyframes warning-pulse { 0%, 100% { opacity: 0.4; transform: scale(1); } 50% { opacity: 1; transform: scale(1.08); } }
+        .animate-warning { animation: warning-pulse 0.8s infinite ease-in-out; }
+        @keyframes super-glow { 0%, 100% { box-shadow: 0 0 15px #f59e0b, inset 0 0 15px #f59e0b; } 50% { box-shadow: 0 0 30px #ef4444, inset 0 0 25px #ef4444; } }
+        .card-evo-glow { animation: super-glow 1.2s infinite ease-in-out; }
+        @keyframes boss-warning-blink { 0%, 100% { background-color: rgba(225, 29, 72, 0.9); } 50% { background-color: rgba(159, 18, 57, 0.6); } }
+        .boss-warning-bg { animation: boss-warning-blink 0.5s infinite; }
+    </style>
+</head>
+<body class="w-screen h-screen relative select-none">
+
+    <!-- ONE-PAGE WEBSITE OVERLAY -->
+    <div id="landing-page" class="absolute inset-0 z-40 overflow-y-auto bg-slate-950/95 backdrop-blur-xl flex flex-col justify-between">
+        
+        <!-- Navigation Header -->
+        <nav class="sticky top-0 z-50 w-full bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-6 py-3 flex justify-between items-center max-w-7xl mx-auto">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl filter drop-shadow">🕵️‍♂️</span>
+                <span class="font-black text-xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">倖存者傳說</span>
+            </div>
+            <div class="hidden md:flex gap-6 text-sm font-semibold text-slate-300">
+                <a href="#hero" class="hover:text-amber-400 transition"><i class="fa-solid fa-house me-1"></i>首頁</a>
+                <a href="#features" class="hover:text-amber-400 transition"><i class="fa-solid fa-star me-1"></i>遊戲特色</a>
+                <a href="#roadmap" class="hover:text-amber-400 transition"><i class="fa-solid fa-timeline me-1"></i>開發歷程</a>
+            </div>
+            <button onclick="launchGame()" class="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:scale-105 text-slate-950 font-black px-5 py-2 rounded-xl shadow-lg shadow-emerald-500/20 flex items-center gap-2 transition active:scale-95">
+                <i class="fa-solid fa-gamepad text-lg"></i>
+                <span>立即試玩</span>
+            </button>
+        </nav>
+
+        <!-- Hero Banner Section -->
+        <section id="hero" class="relative py-16 px-6 text-center max-w-5xl mx-auto my-auto flex flex-col items-center">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-bold mb-6 animate-pulse">
+                <i class="fa-solid fa-bolt"></i> Roguelite 割草生存遊戲平台
+            </div>
+            <h1 class="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400 mb-4 glow-text leading-tight">
+                挑戰萬獸狂潮 成為最強特工
+            </h1>
+            <p class="text-slate-400 text-sm md:text-base max-w-2xl mb-8 leading-relaxed">
+                結合 Q 版特工風格、豐富天賦基因、軍火庫抽卡與雙精靈護衛！體驗極致爽快的彈幕切割！
+            </p>
+
+            <div class="flex flex-wrap justify-center gap-4 mb-12">
+                <button onclick="launchGame()" class="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-slate-950 font-black text-xl px-8 py-4 rounded-2xl shadow-xl shadow-emerald-500/30 hover:scale-105 active:scale-95 transition flex items-center gap-3">
+                    <i class="fa-solid fa-play"></i>
+                    <span>啟動遊戲平台</span>
+                </button>
+                <a href="#roadmap" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-lg px-6 py-4 rounded-2xl border border-slate-700 hover:scale-105 active:scale-95 transition flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-indigo-400"></i>
+                    <span>查看開發歷程</span>
+                </a>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-3xl">
+                <div class="card-glass p-4 rounded-2xl text-center">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-400 text-2xl mb-1"></i>
+                    <div class="text-2xl font-black text-white">10+</div>
+                    <div class="text-xs text-slate-400">技能與超武進化</div>
+                </div>
+                <div class="card-glass p-4 rounded-2xl text-center">
+                    <i class="fa-solid fa-gun text-rose-400 text-2xl mb-1"></i>
+                    <div class="text-2xl font-black text-white">5 種</div>
+                    <div class="text-xs text-slate-400">軍火庫 Q版武器</div>
+                </div>
+                <div class="card-glass p-4 rounded-2xl text-center">
+                    <i class="fa-solid fa-dragon text-purple-400 text-2xl mb-1"></i>
+                    <div class="text-2xl font-black text-white">5分鐘</div>
+                    <div class="text-xs text-slate-400">終極 BOSS 降臨</div>
+                </div>
+                <div class="card-glass p-4 rounded-2xl text-center">
+                    <i class="fa-solid fa-dna text-cyan-400 text-2xl mb-1"></i>
+                    <div class="text-2xl font-black text-white">6 大</div>
+                    <div class="text-xs text-slate-400">天賦基因強化</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Showcase (Icons & Visual Cards) -->
+        <section id="features" class="py-16 px-6 border-t border-slate-900 max-w-6xl mx-auto w-full">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-black text-amber-400 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-cubes"></i> 遊戲核心亮點
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">簡潔視覺化特色系統</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Feature 1 -->
+                <div class="card-glass p-6 rounded-2xl border-l-4 border-l-amber-500 hover:scale-105 transition">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl mb-4">
+                        <i class="fa-solid fa-arrows-to-eye"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">幾何打擊與瞄準區域</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        球棒擁有前方半圓打擊判定、槍械呈現三角形瞄準幾何視角，擬真武器感十足！
+                    </p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="card-glass p-6 rounded-2xl border-l-4 border-l-purple-500 hover:scale-105 transition">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-2xl mb-4">
+                        <i class="fa-solid fa-ghost"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">精靈鎖定與陀螺護護衛</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        飛行精靈顯示圓形警戒鎖定範圍，搭配環繞旋轉的戰鬥陀螺，隨時切削近身敵人！
+                    </p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="card-glass p-6 rounded-2xl border-l-4 border-l-rose-500 hover:scale-105 transition">
+                    <div class="w-12 h-12 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-2xl mb-4">
+                        <i class="fa-solid fa-skull-crossbones"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">5分鐘 BOSS 清場降臨</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        生存至第 5 分鐘觸發清場機制，全場小怪消失，降臨血量極高的終極 BOSS！
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Development Roadmap Section (The Entire History visually displayed) -->
+        <section id="roadmap" class="py-16 px-6 border-t border-slate-900 max-w-5xl mx-auto w-full">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-black text-cyan-400 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-code-branch"></i> 遊戲開發歷程
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">從構想到完善的迭代軌跡</p>
+            </div>
+
+            <div class="relative border-l-2 border-slate-800 ml-4 md:ml-32 space-y-8">
+                <!-- Milestone 1 -->
+                <div class="relative pl-6">
+                    <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-indigo-500 ring-4 ring-slate-950"></div>
+                    <div class="text-xs font-bold text-indigo-400 mb-1">階段一 · 基礎原型建立</div>
+                    <h3 class="text-base font-bold text-white mb-1"><i class="fa-solid fa-gamepad me-2 text-amber-400"></i>Roguelite 割草核心機制</h3>
+                    <p class="text-xs text-slate-400">確立玩家移動、擊殺魔物掉落經驗水晶、升級三選一技能與局內外系統區分。</p>
+                </div>
+
+                <!-- Milestone 2 -->
+                <div class="relative pl-6">
+                    <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-purple-500 ring-4 ring-slate-950"></div>
+                    <div class="text-xs font-bold text-purple-400 mb-1">階段二 · 武器與精靈擴充</div>
+                    <h3 class="text-base font-bold text-white mb-1"><i class="fa-solid fa-shield-cat me-2 text-purple-400"></i>豐富武器與飛行精靈</h3>
+                    <p class="text-xs text-slate-400">新增手裡劍、槍械、球棒與光劍；導入火、毒、冰三大飛行精靈伴隨身側戰鬥。</p>
+                </div>
+
+                <!-- Milestone 3 -->
+                <div class="relative pl-6">
+                    <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-amber-500 ring-4 ring-slate-950"></div>
+                    <div class="text-xs font-bold text-amber-400 mb-1">階段三 · 超武進化與抽卡系統</div>
+                    <h3 class="text-base font-bold text-white mb-1"><i class="fa-solid fa-box-open me-2 text-amber-400"></i>4星組合超武 & 軍火抽卡</h3>
+                    <p class="text-xs text-slate-400">技能滿 4 星搭配對應輔助可進化【🔥超武】；主頁面新增稀有度卡牌抽卡與裝備庫。</p>
+                </div>
+
+                <!-- Milestone 4 -->
+                <div class="relative pl-6">
+                    <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-rose-500 ring-4 ring-slate-950"></div>
+                    <div class="text-xs font-bold text-rose-400 mb-1">階段四 · 幾何打擊與 Boss 關卡</div>
+                    <h3 class="text-base font-bold text-white mb-1"><i class="fa-solid fa-bullseye me-2 text-rose-400"></i>打擊幾何判定 & 5分鐘 Boss 清場</h3>
+                    <p class="text-xs text-slate-400">優化槍械三角形視野與球棒半圓揮擊，新增戰鬥陀螺、足球反彈與 5 分鐘 Boss 全場清空機制！</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer Call-to-action -->
+        <footer class="py-8 px-6 border-t border-slate-900 bg-slate-950 text-center text-xs text-slate-500">
+            <div class="flex justify-center gap-6 mb-4 text-sm text-slate-400">
+                <a href="#hero" class="hover:text-amber-400"><i class="fa-solid fa-arrow-up me-1"></i>返回頂部</a>
+            </div>
+            <p>© 2026 Survivor Legends. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- MAIN MENU VIEW -->
+    <div id="main-menu" class="absolute inset-0 z-30 flex flex-col items-center justify-between p-4 md:p-6 bg-slate-950/95 backdrop-blur-md">
+        <!-- Top Info Bar -->
+        <div class="w-full max-w-4xl flex justify-between items-center bg-slate-900/80 border border-slate-800 rounded-2xl p-3 md:p-4 shadow-xl">
+            <div class="flex items-center gap-3">
+                <button onclick="returnToLanding()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold border border-slate-700 transition">
+                    <i class="fa-solid fa-arrow-left me-1"></i>官網
+                </button>
+                <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-xl font-bold shadow-lg shadow-indigo-500/30" id="user-avatar">
+                    🕵️‍♂️
+                </div>
+                <div>
+                    <h2 class="text-sm md:text-base font-bold text-white flex items-center gap-2">
+                        <span>特工總部</span>
+                        <span class="text-xs px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30" id="current-char-name">特工阿特</span>
+                    </h2>
+                    <p class="text-[10px] text-slate-400">最高紀錄: <span id="high-score-display" class="text-amber-400 font-semibold">0</span> 擊殺</p>
+                </div>
+            </div>
+
+            <!-- Currency Display -->
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 bg-slate-950/80 px-4 py-2 rounded-xl border border-amber-500/30 shadow-inner">
+                    <i class="fa-solid fa-coins text-amber-400 text-lg"></i>
+                    <span id="coin-count" class="font-bold text-amber-300 text-lg">1000</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Showcase & Stats Panel Center -->
+        <div class="flex flex-col items-center my-auto text-center relative max-w-lg w-full">
+            <div class="relative group my-2">
+                <div class="w-28 h-28 md:w-32 md:h-32 rounded-3xl bg-gradient-to-tr from-indigo-900 via-slate-900 to-purple-900 border-2 border-indigo-500/50 flex items-center justify-center text-5xl md:text-6xl shadow-2xl animate-glow relative z-10 overflow-hidden">
+                    <span id="equipped-hero-icon" class="filter drop-shadow-[0_0_15px_rgba(99,102,241,0.5)]">🕵️‍♂️</span>
+                </div>
+                <div class="absolute -inset-4 bg-indigo-500/20 rounded-full blur-xl -z-0"></div>
+            </div>
+
+            <h1 class="text-2xl md:text-3xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400 my-1 glow-text">
+                倖存者傳說
+            </h1>
+            <p class="text-slate-400 text-xs mb-3">升級天賦、裝備Q版武器、召喚飛行精靈，挑戰關卡！</p>
+
+            <!-- Agent Base Stats Card -->
+            <div class="w-full bg-slate-900/90 border border-slate-800 rounded-2xl p-3 shadow-xl mb-3 grid grid-cols-4 gap-2 text-center text-xs">
+                <div class="bg-slate-950/80 p-2 rounded-xl border border-rose-500/20">
+                    <div class="text-rose-400 font-bold mb-0.5"><i class="fa-solid fa-hand-fist me-1"></i>攻擊力</div>
+                    <div id="stat-atk" class="font-black text-white text-sm">100%</div>
+                </div>
+                <div class="bg-slate-950/80 p-2 rounded-xl border border-emerald-500/20">
+                    <div class="text-emerald-400 font-bold mb-0.5"><i class="fa-solid fa-heart me-1"></i>生命值</div>
+                    <div id="stat-hp" class="font-black text-white text-sm">120</div>
+                </div>
+                <div class="bg-slate-950/80 p-2 rounded-xl border border-sky-500/20">
+                    <div class="text-sky-400 font-bold mb-0.5"><i class="fa-solid fa-shoe-prints me-1"></i>移速</div>
+                    <div id="stat-spd" class="font-black text-white text-sm">3.2</div>
+                </div>
+                <div class="bg-slate-950/80 p-2 rounded-xl border border-purple-500/20">
+                    <div class="text-purple-400 font-bold mb-0.5"><i class="fa-solid fa-bolt me-1"></i>冷卻縮減</div>
+                    <div id="stat-cd" class="font-black text-white text-sm">0%</div>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs Grid -->
+            <div class="grid grid-cols-3 gap-2 md:gap-3 w-full">
+                <button id="btn-open-gacha" class="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold py-2.5 px-2 rounded-xl shadow-lg shadow-orange-500/20 flex items-center justify-center gap-1.5 text-xs md:text-sm transition active:scale-95">
+                    <i class="fa-solid fa-box-open text-base"></i>
+                    <span>軍火抽卡</span>
+                </button>
+                <button id="btn-open-bag" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2.5 px-2 rounded-xl border border-slate-700 shadow-lg flex items-center justify-center gap-1.5 text-xs md:text-sm transition active:scale-95">
+                    <i class="fa-solid fa-shirt text-base"></i>
+                    <span>特工裝備</span>
+                </button>
+                <button id="btn-open-talent" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold py-2.5 px-2 rounded-xl border border-indigo-400/30 shadow-lg flex items-center justify-center gap-1.5 text-xs md:text-sm transition active:scale-95">
+                    <i class="fa-solid fa-dna text-base text-cyan-300"></i>
+                    <span>天賦基因</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Start Game / Stage Select Button -->
+        <div class="w-full max-w-sm mb-2 flex gap-3">
+            <button id="btn-select-stage" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-4 py-3 rounded-2xl border border-slate-700 flex flex-col items-center justify-center text-xs shadow-lg active:scale-95 transition">
+                <i class="fa-solid fa-map text-amber-400 text-lg mb-0.5"></i>
+                <span id="current-stage-btn-label">關卡一</span>
+            </button>
+            <button id="btn-start-game" class="flex-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black text-xl md:text-2xl py-3.5 rounded-2xl shadow-xl shadow-emerald-500/30 border-t border-emerald-300 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3">
+                <i class="fa-solid fa-play"></i>
+                <span>開啟戰鬥</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== STAGE SELECT MODAL ==================== -->
+    <div id="stage-modal" class="hidden absolute inset-0 z-40 bg-slate-950/90 backdrop-blur-lg flex flex-col items-center justify-between p-6">
+        <div class="w-full max-w-2xl flex justify-between items-center border-b border-slate-800 pb-4">
+            <h2 class="text-2xl font-black text-amber-400 flex items-center gap-2">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <span>戰鬥關卡地圖</span>
+            </h2>
+            <button id="btn-close-stage" class="w-10 h-10 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-slate-300 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div id="stage-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-3xl my-auto"></div>
+    </div>
+
+    <!-- ==================== TALENT MODAL ==================== -->
+    <div id="talent-modal" class="hidden absolute inset-0 z-40 bg-slate-950/90 backdrop-blur-lg flex flex-col items-center justify-between p-6">
+        <div class="w-full max-w-2xl flex justify-between items-center border-b border-slate-800 pb-4">
+            <h2 class="text-2xl font-black text-purple-400 flex items-center gap-2">
+                <i class="fa-solid fa-dna"></i>
+                <span>特工天賦基因樹</span>
+            </h2>
+            <button id="btn-close-talent" class="w-10 h-10 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-slate-300 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div id="talent-grid" class="w-full max-w-2xl flex-1 overflow-y-auto my-4 grid grid-cols-1 md:grid-cols-2 gap-3 pr-2"></div>
+    </div>
+
+    <!-- ==================== GACHA MODAL ==================== -->
+    <div id="gacha-modal" class="hidden absolute inset-0 z-40 bg-slate-950/90 backdrop-blur-lg flex flex-col items-center justify-between p-6">
+        <div class="w-full max-w-2xl flex justify-between items-center border-b border-slate-800 pb-4">
+            <h2 class="text-2xl font-black text-amber-400 flex items-center gap-2">
+                <i class="fa-solid fa-dice-d20"></i>
+                <span>軍火庫神祕抽卡</span>
+            </h2>
+            <button id="btn-close-gacha" class="w-10 h-10 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-slate-300 text-lg transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div id="gacha-toast" class="hidden my-2 bg-rose-500/20 border border-rose-500 text-rose-300 px-4 py-2 rounded-xl text-sm"></div>
+
+        <!-- Card Reveal Area -->
+        <div id="gacha-display-area" class="my-auto flex flex-wrap items-center justify-center gap-3 w-full max-w-3xl max-h-[60vh] overflow-y-auto p-4 custom-scrollbar">
+            <div id="gacha-card-placeholder" class="w-56 h-80 rounded-2xl border-2 border-dashed border-slate-700 flex flex-col items-center justify-center text-slate-500 p-6 text-center">
+                <i class="fa-solid fa-gift text-5xl mb-4 animate-bounce text-amber-400"></i>
+                <p class="text-sm">抽取角色與高品質主武器！</p>
+                <p class="text-xs text-amber-400/80 mt-2">機率: 傳說 5% | 史詩 15% | 稀有 30% | 普通 50%</p>
+            </div>
+        </div>
+
+        <!-- Pull Actions -->
+        <div class="w-full max-w-md flex gap-4">
+            <button id="btn-pull-1" class="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-bold py-3 rounded-xl shadow-lg flex flex-col items-center justify-center active:scale-95 transition">
+                <span>單抽 (1x)</span>
+                <span class="text-xs font-normal flex items-center gap-1"><i class="fa-solid fa-coins"></i> 100</span>
+            </button>
+            <button id="btn-pull-10" class="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3 rounded-xl shadow-lg flex flex-col items-center justify-center active:scale-95 transition">
+                <span>十連抽 (10x)</span>
+                <span class="text-xs font-normal flex items-center gap-1"><i class="fa-solid fa-coins"></i> 900</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== BAG / EQUIPMENT MODAL ==================== -->
+    <div id="bag-modal" class="hidden absolute inset-0 z-40 bg-slate-950/90 backdrop-blur-lg flex flex-col items-center justify-between p-6">
+        <div class="w-full max-w-2xl flex justify-between items-center border-b border-slate-800 pb-4">
+            <h2 class="text-2xl font-black text-indigo-400 flex items-center gap-2">
+                <i class="fa-solid fa-boxes-packing"></i>
+                <span>特工角色與局外武器裝備庫</span>
+            </h2>
+            <button id="btn-close-bag" class="w-10 h-10 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-slate-300 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="w-full max-w-2xl flex-1 overflow-y-auto my-4 space-y-6 pr-2">
+            <!-- Characters Section -->
+            <div>
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">特工角色選擇</h3>
+                <div id="character-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
+            </div>
+
+            <!-- Weapons Section -->
+            <div>
+                <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider mb-1">主武器選擇 (局外唯一裝備)</h3>
+                <p class="text-xs text-slate-500 mb-3">開局時持有的主武器，品質越高等級屬性越強！</p>
+                <div id="weapon-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== IN-GAME VIEW ==================== -->
+    <div id="game-view" class="hidden absolute inset-0 z-10 bg-slate-950 flex flex-col items-center justify-center">
+        <canvas id="gameCanvas" class="w-full h-full block bg-slate-900"></canvas>
+
+        <!-- Horde Warning Banner -->
+        <div id="horde-alert-banner" class="hidden absolute top-24 pointer-events-none flex flex-col items-center animate-warning z-20">
+            <div class="bg-rose-600/90 border-2 border-amber-300 text-white font-black px-6 py-2 rounded-2xl shadow-2xl flex items-center gap-3 text-lg md:text-xl tracking-wider">
+                <span class="text-2xl animate-bounce">⚠️</span>
+                <span>警告：大量怪物襲來！</span>
+                <span class="text-2xl animate-bounce">⚠️</span>
+            </div>
+        </div>
+
+        <!-- Boss Warning Banner -->
+        <div id="boss-alert-banner" class="hidden absolute top-20 pointer-events-none flex flex-col items-center z-30">
+            <div class="boss-warning-bg border-2 border-yellow-300 text-white font-black px-8 py-3 rounded-2xl shadow-2xl flex items-center gap-4 text-xl md:text-2xl tracking-widest uppercase">
+                <span class="text-3xl animate-spin">☠️</span>
+                <span>BOSS 襲來！準備迎戰！</span>
+                <span class="text-3xl animate-spin">☠️</span>
+            </div>
+        </div>
+
+        <!-- Boss HUD Health Bar -->
+        <div id="boss-hud" class="hidden absolute top-4 w-full max-w-xl px-4 pointer-events-none flex flex-col items-center z-20">
+            <div class="w-full bg-slate-950/90 border-2 border-rose-500 rounded-xl p-2 shadow-2xl backdrop-blur">
+                <div class="flex justify-between items-center text-xs font-black mb-1">
+                    <span id="boss-hud-name" class="text-rose-400 text-sm tracking-wide">💀 虛空領主 BOSS</span>
+                    <span id="boss-hud-hp-text" class="text-slate-200">1000/1000</span>
+                </div>
+                <div class="w-full h-3 bg-slate-900 rounded-full overflow-hidden border border-rose-900">
+                    <div id="boss-hud-hp-bar" class="h-full bg-gradient-to-r from-rose-600 via-red-500 to-amber-500 w-full transition-all duration-100"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Player HUD Overlay -->
+        <div class="absolute top-0 left-0 w-full p-3 md:p-4 pointer-events-none flex flex-col gap-2 z-20">
+            <div class="flex justify-between items-center max-w-4xl mx-auto w-full">
+                <div class="flex items-center gap-3 bg-slate-950/80 p-2 px-4 rounded-xl border border-slate-800 backdrop-blur pointer-events-auto">
+                    <span class="font-black text-amber-400 text-lg">Lv.<span id="hud-level">1</span></span>
+                    <div class="w-28 md:w-44 h-3 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                        <div id="hud-exp-bar" class="h-full bg-gradient-to-r from-amber-400 to-yellow-300 w-0 transition-all duration-200"></div>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 md:gap-4 items-center">
+                    <div class="flex gap-3 items-center bg-slate-950/80 p-2 px-3 rounded-xl border border-slate-800 backdrop-blur pointer-events-auto text-xs text-slate-300">
+                        <div><i class="fa-solid fa-clock text-indigo-400 me-1"></i><span id="hud-time">00:00</span></div>
+                        <div><i class="fa-solid fa-skull text-rose-400 me-1"></i><span id="hud-kills">0</span></div>
+                        <div class="text-amber-300"><i class="fa-solid fa-coins me-1"></i><span id="hud-coins">0</span></div>
+                    </div>
+
+                    <!-- Pause Button -->
+                    <button id="btn-pause-game" class="w-10 h-10 bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-amber-400 rounded-xl flex items-center justify-center text-lg shadow-lg pointer-events-auto transition active:scale-95">
+                        <i class="fa-solid fa-pause"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Health Bar -->
+            <div class="max-w-4xl mx-auto w-full flex justify-center">
+                <div class="w-full max-w-md bg-slate-950/80 p-1.5 rounded-xl border border-slate-800 backdrop-blur flex items-center gap-2">
+                    <i class="fa-solid fa-heart text-rose-500 text-xs ml-2"></i>
+                    <div class="flex-1 h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                        <div id="hud-hp-bar" class="h-full bg-gradient-to-r from-rose-600 to-pink-500 w-full transition-all duration-100"></div>
+                    </div>
+                    <span id="hud-hp-text" class="text-[10px] text-slate-300 font-mono mr-2">100/100</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Touch Joystick -->
+        <div id="joystick-zone" class="absolute bottom-6 left-6 w-32 h-32 rounded-full border-2 border-slate-700/50 bg-slate-900/30 backdrop-blur-sm flex items-center justify-center md:hidden pointer-events-auto">
+            <div id="joystick-stick" class="w-12 h-12 rounded-full bg-indigo-500/60 border border-indigo-300 shadow-lg transform transition-transform duration-75"></div>
+        </div>
+    </div>
+
+    <!-- ==================== IN-GAME PAUSE MODAL ==================== -->
+    <div id="pause-modal" class="hidden absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-between p-6">
+        <div class="w-full max-w-2xl flex justify-between items-center border-b border-slate-800 pb-3">
+            <h2 class="text-2xl font-black text-amber-400 flex items-center gap-2">
+                <i class="fa-solid fa-circle-pause"></i>
+                <span>戰鬥暫停 - 技能面板</span>
+            </h2>
+            <button id="btn-resume-game" class="w-10 h-10 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-slate-300 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Skill Capacity Overview -->
+        <div class="w-full max-w-2xl my-auto space-y-4">
+            <!-- Active Skills (Max 5) -->
+            <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-sm font-bold text-rose-400 flex items-center gap-2">
+                        <i class="fa-solid fa-fire"></i>
+                        <span>主動技能與武器 (上限 5 個)</span>
+                    </h3>
+                    <span id="active-skill-count-badge" class="text-xs px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 font-mono">1/5</span>
+                </div>
+                <div id="pause-active-skills-grid" class="grid grid-cols-5 gap-2"></div>
+            </div>
+
+            <!-- Passive Skills (Max 6) -->
+            <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-sm font-bold text-sky-400 flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>輔助被動技能 (上限 6 個)</span>
+                    </h3>
+                    <span id="passive-skill-count-badge" class="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30 font-mono">0/6</span>
+                </div>
+                <div id="pause-passive-skills-grid" class="grid grid-cols-6 gap-2"></div>
+            </div>
+        </div>
+
+        <div class="w-full max-w-sm flex gap-3">
+            <button id="btn-continue" class="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-black py-3 rounded-xl shadow-lg transition active:scale-95">
+                繼續戰鬥
+            </button>
+            <button id="btn-quit-match" class="bg-slate-800 hover:bg-rose-900/50 text-rose-300 font-bold px-5 py-3 rounded-xl border border-rose-500/30 transition active:scale-95">
+                放棄離開
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== LEVEL UP CHOICE MODAL ==================== -->
+    <div id="level-modal" class="hidden absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex flex-col items-center justify-center p-4">
+        <div class="text-center mb-4">
+            <h2 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 animate-pulse">
+                等級提升！ LEVEL UP
+            </h2>
+            <p class="text-slate-400 text-xs mt-1">選擇能力升級！達4星搭配指定輔助即可解鎖【🔥進化超武】！</p>
+        </div>
+
+        <div id="skills-container" class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl"></div>
+    </div>
+
+    <!-- ==================== GAME OVER MODAL ==================== -->
+    <div id="gameover-modal" class="hidden absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center">
+        <div class="w-20 h-20 bg-rose-500/20 border-2 border-rose-500 rounded-full flex items-center justify-center text-4xl text-rose-500 mb-4 animate-bounce">
+            <i class="fa-solid fa-skull-crossbones"></i>
+        </div>
+        <h2 class="text-4xl font-black text-rose-500 mb-2">戰鬥結束</h2>
+        <p class="text-slate-400 text-sm mb-6">特工不幸陣亡...</p>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-sm mb-6 space-y-3">
+            <div class="flex justify-between text-sm">
+                <span class="text-slate-400">生存時間</span>
+                <span id="end-time" class="font-bold text-white">00:00</span>
+            </div>
+            <div class="flex justify-between text-sm">
+                <span class="text-slate-400">擊殺魔物</span>
+                <span id="end-kills" class="font-bold text-rose-400">0</span>
+            </div>
+            <div class="flex justify-between text-sm">
+                <span class="text-slate-400">獲得金幣</span>
+                <span id="end-coins" class="font-bold text-amber-300">+0</span>
+            </div>
+        </div>
+
+        <button id="btn-back-menu" class="w-full max-w-sm bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold py-4 rounded-xl shadow-lg transition active:scale-95">
+            返回特工總部
+        </button>
+    </div>
+
+    <!-- ==================== GAME SCRIPT ENGINE ==================== -->
+    <script>
+        // Landing Page Nav Controllers
+        function launchGame() {
+            document.getElementById('landing-page').classList.add('hidden');
+        }
+
+        function returnToLanding() {
+            document.getElementById('landing-page').classList.remove('hidden');
+        }
+
+        const AudioEngine = {
+            ctx: null,
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            },
+            playHit() {
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(160, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(40, this.ctx.currentTime + 0.08);
+                gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.08);
+            },
+            playExp() {
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(650, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(950, this.ctx.currentTime + 0.07);
+                gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.07);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.07);
+            },
+            playLevelUp() {
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                [440, 554, 659, 880].forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                    gain.gain.setValueAtTime(0.2, now + idx * 0.08);
+                    gain.gain.linearRampToValueAtTime(0.01, now + idx * 0.08 + 0.15);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + idx * 0.08);
+                    osc.stop(now + idx * 0.08 + 0.15);
+                });
+            },
+            playGacha() {
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime + 0.4);
+                gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.4);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.4);
+            },
+            playAlarm() {
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(850, this.ctx.currentTime);
+                osc.frequency.setValueAtTime(450, this.ctx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.3);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.3);
+            },
+            playExplosion() {
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(120, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(20, this.ctx.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.35, this.ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.3);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.3);
+            }
+        };
+
+        const CHARACTERS = [
+            { id: 'knight', name: '特工阿特', icon: '🕵️‍♂️', baseHp: 120, baseSpeed: 3.2, baseAtk: 1.0, baseCd: 0.0, color: '#3b82f6', desc: '能力均衡，擁有優良生存生命值' },
+            { id: 'ninja', name: '疾風影武', icon: '🥷', baseHp: 90, baseSpeed: 4.2, baseAtk: 1.1, baseCd: 0.1, color: '#a855f7', desc: '移動速度極快，技能冷卻縮減 +10%' },
+            { id: 'mage', name: '爆破專家', icon: '🧙‍♂️', baseHp: 100, baseSpeed: 3.0, baseAtk: 1.35, baseCd: 0.05, color: '#ef4444', desc: '基礎攻擊力大幅提升 +35%' }
+        ];
+
+        const RARITY_CONFIG = {
+            common: { label: '普通', color: 'text-slate-400', atkMult: 1.0, bgClass: 'gacha-card-common' },
+            rare: { label: '稀有', color: 'text-blue-400', atkMult: 1.3, bgClass: 'gacha-card-rare' },
+            epic: { label: '史詩', color: 'text-purple-400', atkMult: 1.7, bgClass: 'gacha-card-epic' },
+            legendary: { label: '傳說', color: 'text-amber-400', atkMult: 2.3, bgClass: 'gacha-card-legendary' }
+        };
+
+        // Out of Game Main Weapons (Directional vs Auto)
+        const WEAPONS = [
+            { id: 'bat', name: '棒球棒', icon: '🏏', directional: true, dirLabel: '方向瞄準', desc: '前方扇形猛烈揮擊，高擊退敵人', evoName: '狼牙神聖棒', evoIcon: '🏏✨', pairPassive: 'max_hp' },
+            { id: 'gun', name: '左輪手槍', icon: '🔫', directional: true, dirLabel: '方向瞄準', desc: '朝移動方向發射穿透性強力子彈', evoName: '加特林重機槍', evoIcon: '🔫✨', pairPassive: 'cooldown' },
+            { id: 'shotgun', name: '散彈獵槍', icon: '💥', directional: true, dirLabel: '方向瞄準', desc: '朝前方噴射多重散射彈幕大面積轟擊', evoName: '毀滅暴風獵槍', evoIcon: '💥✨', pairPassive: 'area' },
+            { id: 'shuriken', name: '忍者手裡劍', icon: '✴️', directional: false, dirLabel: '自動鎖定', desc: '自動發射迴旋飛舞穿透手裡劍', evoName: '無影幽冥刃', evoIcon: '✴️✨', pairPassive: 'speed' },
+            { id: 'lightsaber', name: '光劍', icon: '🗡️', directional: false, dirLabel: '自動鎖定', desc: '自動環繞自身極速斬擊四周近身敵軍', evoName: '絕地神光劍', evoIcon: '🗡️✨', pairPassive: 'might' }
+        ];
+
+        // In-game Active Skills & Passives
+        const IN_GAME_SKILLS = [
+            // Active Skills
+            { id: 'lightning', category: 'active', name: '狂暴天雷', icon: '⚡', desc: '自動召喚天雷轟炸周圍隨機敵人', evoName: '審判天罰暴雷', evoIcon: '⚡✨', pairPassive: 'magnet' },
+            { id: 'molotov', category: 'active', name: '燃錨瓶', icon: '🍾', desc: '拋擲燃燒瓶於地面產生持續灼燒火海', evoName: '地獄業火焚天', evoIcon: '🔥✨', pairPassive: 'area' },
+            { id: 'soccer', category: 'active', name: '足球', icon: '⚽', desc: '發射高速足球在邊界與敵人之間反彈', evoName: '炫彩量子足球', evoIcon: '⚽✨', pairPassive: 'speed' },
+            { id: 'spinning_top', category: 'active', name: '戰鬥陀螺', icon: '🌀', desc: '召喚旋轉陀螺圍繞玩家提供護衛與切削', evoName: '暴風超陀螺', evoIcon: '🌀✨', pairPassive: 'cooldown' },
+            { id: 'spirit_fire', category: 'active', name: '火精靈', icon: '🔥', desc: '召喚火焰精靈飛翔於身旁，自動發射追蹤火球', evoName: '熾熱火鳳凰', evoIcon: '🦅✨', pairPassive: 'might' },
+            { id: 'spirit_poison', category: 'active', name: '毒精靈', icon: '🧪', desc: '召喚毒精靈飛翔身旁釋放毒霧脈衝持續毒傷', evoName: '萬毒瘟疫神', evoIcon: '☠️✨', pairPassive: 'area' },
+            { id: 'spirit_ice', category: 'active', name: '冰精靈', icon: '❄️', desc: '召喚冰精靈飛翔身旁發射冰晶封凍敵方移動', evoName: '絕對零度冰晶', evoIcon: '❄✨', pairPassive: 'cooldown' },
+            { id: 'whistle_arrow', category: 'active', name: '哨箭', icon: '🏹', desc: '自動高速追蹤並穿透敵人的響哨飛箭', evoName: '穿雲噬魂神箭', evoIcon: '🏹✨', pairPassive: 'speed' },
+
+            // Auxiliary Passives
+            { id: 'speed', category: 'passive', name: '疾風運動鞋', icon: '👟', desc: '特工移動速度 +15%', synergy: '進化連動: ✴️手裡劍 / ⚽足球 / 🏹哨箭' },
+            { id: 'max_hp', category: 'passive', name: '高能健身飲品', icon: '🧃', desc: '生命上限 +25% 並即時回滿', synergy: '進化連動: 🏏棒球棒' },
+            { id: 'magnet', category: 'passive', name: '強效磁鐵', icon: '🧲', desc: '經驗水晶吸取範圍 +60%', synergy: '進化連動: ⚡狂暴天雷' },
+            { id: 'cooldown', category: 'passive', name: '高效冷卻劑', icon: '🧊', desc: '所有武器技能冷卻時間 -12%', synergy: '進化連動: 🔫左輪 / 🌀陀螺 / ❄️冰精靈' },
+            { id: 'might', category: 'passive', name: '高能外骨骼', icon: '🦾', desc: '整體攻擊力提升 +20%', synergy: '進化連動: 🗡️光劍 / 🔥火精靈' },
+            { id: 'area', category: 'passive', name: '範圍擴張劑', icon: '🧪', desc: '攻擊與技能作用範圍 +20%', synergy: '進化連動: 💥散彈槍 / 🍾燃燒瓶 / 🧪毒精靈' }
+        ];
+
+        // Talent Upgrade System Definitions
+        const TALENTS = [
+            { id: 't_atk', name: '基因力量', icon: '💪', desc: '局內基礎攻擊力 +5%', maxLv: 10, costBase: 150, costInc: 100 },
+            { id: 't_hp', name: '基因生命', icon: '❤️', desc: '局內基礎生命值 +15', maxLv: 10, costBase: 150, costInc: 100 },
+            { id: 't_spd', name: '敏捷反射', icon: '👟', desc: '局內移動速度 +3%', maxLv: 10, costBase: 200, costInc: 150 },
+            { id: 't_mag', name: '磁場重力', icon: '🧲', desc: '拾取經驗距離 +10%', maxLv: 10, costBase: 150, costInc: 100 },
+            { id: 't_cd', name: '戰術縮減', icon: '⚡', desc: '技能冷卻時間 -2%', maxLv: 10, costBase: 300, costInc: 200 },
+            { id: 't_coin', name: '財運提升', icon: '💰', desc: '戰鬥結算金幣 +10%', maxLv: 10, costBase: 200, costInc: 150 }
+        ];
+
+        // Stages / Levels Definitions
+        const STAGES = [
+            { id: 1, name: '關卡一：廢棄都市', bg: '#0b1120', gridColor: '#1e293b', desc: '魔物入侵都市遺跡，適合新手特工磨練戰技。', hpMult: 1.0, spdMult: 1.0, bossName: '虛空領主' },
+            { id: 2, name: '關卡二：迷霧幽林', bg: '#062016', gridColor: '#0f392b', desc: '密林迷霧籠罩，怪物生命力與速度提升30%！', hpMult: 1.3, spdMult: 1.15, bossName: '幽林毒皇' },
+            { id: 3, name: '關卡三：賽博廢土', bg: '#210519', gridColor: '#3b0d2e', desc: '極度危險！狂暴機械怪大量湧現，挑戰極限。', hpMult: 1.7, spdMult: 1.3, bossName: '滅世泰坦' }
+        ];
+
+        let state = {
+            coins: 1000,
+            highScore: 0,
+            unlockedChars: ['knight'],
+            inventoryWeapons: [{ id: 'bat', rarity: 'common' }],
+            selectedChar: 'knight',
+            selectedWeaponIndex: 0,
+            selectedStageId: 1,
+            talents: { t_atk: 0, t_hp: 0, t_spd: 0, t_mag: 0, t_cd: 0, t_coin: 0 }
+        };
+
+        function loadState() {
+            const saved = localStorage.getItem('survivor_game_save_v4');
+            if (saved) {
+                try { state = { ...state, ...JSON.parse(saved) }; } catch (e) {}
+            }
+            if (!state.talents) state.talents = { t_atk: 0, t_hp: 0, t_spd: 0, t_mag: 0, t_cd: 0, t_coin: 0 };
+            updateMenuUI();
+        }
+
+        function saveState() {
+            localStorage.setItem('survivor_game_save_v4', JSON.stringify(state));
+            updateMenuUI();
+        }
+
+        function getEquippedWeapon() {
+            const item = state.inventoryWeapons[state.selectedWeaponIndex] || { id: 'bat', rarity: 'common' };
+            const baseW = WEAPONS.find(w => w.id === item.id) || WEAPONS[0];
+            const rarityInfo = RARITY_CONFIG[item.rarity] || RARITY_CONFIG.common;
+            return { ...baseW, rarity: item.rarity, rarityInfo };
+        }
+
+        function getAgentStats() {
+            const char = CHARACTERS.find(c => c.id === state.selectedChar) || CHARACTERS[0];
+            const weapon = getEquippedWeapon();
+            const t = state.talents;
+
+            const talentAtkBonus = (t.t_atk || 0) * 0.05;
+            const talentHpBonus = (t.t_hp || 0) * 15;
+            const talentSpdBonus = (t.t_spd || 0) * 0.03;
+            const talentCdBonus = (t.t_cd || 0) * 0.02;
+
+            const atk = Math.round((char.baseAtk * weapon.rarityInfo.atkMult + talentAtkBonus) * 100);
+            const hp = char.baseHp + talentHpBonus;
+            const spd = (char.baseSpeed * (1 + talentSpdBonus)).toFixed(1);
+            const cd = Math.round((char.baseCd + talentCdBonus) * 100);
+
+            return { atk, hp, spd, cd, char, weapon };
+        }
+
+        function updateMenuUI() {
+            document.getElementById('coin-count').innerText = state.coins;
+            document.getElementById('high-score-display').innerText = state.highScore;
+
+            const stats = getAgentStats();
+            document.getElementById('current-char-name').innerText = stats.char.name;
+            document.getElementById('equipped-hero-icon').innerText = stats.char.icon;
+
+            document.getElementById('stat-atk').innerText = `${stats.atk}%`;
+            document.getElementById('stat-hp').innerText = stats.hp;
+            document.getElementById('stat-spd').innerText = stats.spd;
+            document.getElementById('stat-cd').innerText = `${stats.cd}%`;
+
+            const stg = STAGES.find(s => s.id === state.selectedStageId) || STAGES[0];
+            document.getElementById('current-stage-btn-label').innerText = stg.name.split('：')[1] || stg.name;
+        }
+
+        const mainMenu = document.getElementById('main-menu');
+        const gachaModal = document.getElementById('gacha-modal');
+        const bagModal = document.getElementById('bag-modal');
+        const talentModal = document.getElementById('talent-modal');
+        const stageModal = document.getElementById('stage-modal');
+        const gameView = document.getElementById('game-view');
+        const pauseModal = document.getElementById('pause-modal');
+        const levelModal = document.getElementById('level-modal');
+        const gameoverModal = document.getElementById('gameover-modal');
+
+        document.getElementById('btn-open-gacha').addEventListener('click', () => { AudioEngine.init(); gachaModal.classList.remove('hidden'); });
+        document.getElementById('btn-close-gacha').addEventListener('click', () => { gachaModal.classList.add('hidden'); resetGachaDisplay(); });
+
+        document.getElementById('btn-open-bag').addEventListener('click', () => { AudioEngine.init(); renderBag(); bagModal.classList.remove('hidden'); });
+        document.getElementById('btn-close-bag').addEventListener('click', () => bagModal.classList.add('hidden'));
+
+        document.getElementById('btn-open-talent').addEventListener('click', () => { AudioEngine.init(); renderTalents(); talentModal.classList.remove('hidden'); });
+        document.getElementById('btn-close-talent').addEventListener('click', () => talentModal.classList.add('hidden'));
+
+        document.getElementById('btn-select-stage').addEventListener('click', () => { AudioEngine.init(); renderStages(); stageModal.classList.remove('hidden'); });
+        document.getElementById('btn-close-stage').addEventListener('click', () => stageModal.classList.add('hidden'));
+
+        document.getElementById('btn-start-game').addEventListener('click', () => {
+            AudioEngine.init();
+            mainMenu.classList.add('hidden');
+            gameView.classList.remove('hidden');
+            startGame();
+        });
+
+        document.getElementById('btn-back-menu').addEventListener('click', () => {
+            gameoverModal.classList.add('hidden');
+            gameView.classList.add('hidden');
+            mainMenu.classList.remove('hidden');
+            updateMenuUI();
+        });
+
+        document.getElementById('btn-pause-game').addEventListener('click', togglePauseMenu);
+        document.getElementById('btn-resume-game').addEventListener('click', togglePauseMenu);
+        document.getElementById('btn-continue').addEventListener('click', togglePauseMenu);
+        document.getElementById('btn-quit-match').addEventListener('click', () => {
+            pauseModal.classList.add('hidden');
+            endGame();
+        });
+
+        function showToast(msg) {
+            const toast = document.getElementById('gacha-toast');
+            toast.innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 2500);
+        }
+
+        function resetGachaDisplay() {
+            const displayArea = document.getElementById('gacha-display-area');
+            displayArea.innerHTML = `
+                <div id="gacha-card-placeholder" class="w-56 h-80 rounded-2xl border-2 border-dashed border-slate-700 flex flex-col items-center justify-center text-slate-500 p-6 text-center">
+                    <i class="fa-solid fa-gift text-5xl mb-4 animate-bounce text-amber-400"></i>
+                    <p class="text-sm">抽取角色與高品質主武器！</p>
+                    <p class="text-xs text-amber-400/80 mt-2">機率: 傳說 5% | 史詩 15% | 稀有 30% | 普通 50%</p>
+                </div>
+            `;
+        }
+
+        function performPull() {
+            const rand = Math.random();
+            let rarity = 'common';
+            if (rand < 0.05) rarity = 'legendary';
+            else if (rand < 0.20) rarity = 'epic';
+            else if (rand < 0.50) rarity = 'rare';
+
+            const isChar = Math.random() < 0.35;
+            if (isChar) {
+                const item = CHARACTERS[Math.floor(Math.random() * CHARACTERS.length)];
+                if (!state.unlockedChars.includes(item.id)) state.unlockedChars.push(item.id);
+                return { ...item, rarity, itemType: '角色', rarityInfo: RARITY_CONFIG[rarity] };
+            } else {
+                const item = WEAPONS[Math.floor(Math.random() * WEAPONS.length)];
+                state.inventoryWeapons.push({ id: item.id, rarity });
+                return { ...item, rarity, itemType: '主武器', rarityInfo: RARITY_CONFIG[rarity] };
+            }
+        }
+
+        function displayGachaResults(items) {
+            AudioEngine.playGacha();
+            const displayArea = document.getElementById('gacha-display-area');
+            displayArea.innerHTML = '';
+
+            items.forEach((item) => {
+                const card = document.createElement('div');
+                card.className = `w-32 h-44 md:w-36 md:h-52 rounded-xl p-3 flex flex-col items-center justify-between text-center shadow-xl border border-white/20 transform transition-all duration-300 ${item.rarityInfo.bgClass}`;
+
+                card.innerHTML = `
+                    <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-black/40 text-white">${item.itemType}</span>
+                    <span class="text-3xl my-1 filter drop-shadow">${item.icon}</span>
+                    <div>
+                        <h4 class="text-xs font-black text-white leading-tight">${item.name}</h4>
+                        <p class="text-[9px] text-white/80 line-clamp-2 mt-0.5">${item.desc}</p>
+                    </div>
+                    <span class="text-[9px] font-bold text-amber-200">★ ${item.rarityInfo.label} (x${item.rarityInfo.atkMult})</span>
+                `;
+                displayArea.appendChild(card);
+            });
+            saveState();
+        }
+
+        document.getElementById('btn-pull-1').addEventListener('click', () => {
+            if (state.coins < 100) return showToast('金幣不足！請多在戰鬥中討伐魔物。');
+            state.coins -= 100;
+            displayGachaResults([performPull()]);
+        });
+
+        document.getElementById('btn-pull-10').addEventListener('click', () => {
+            if (state.coins < 900) return showToast('金幣不足！');
+            state.coins -= 900;
+            const results = [];
+            for (let i = 0; i < 10; i++) results.push(performPull());
+            displayGachaResults(results);
+        });
+
+        function renderBag() {
+            const charGrid = document.getElementById('character-grid');
+            charGrid.innerHTML = '';
+            CHARACTERS.forEach(c => {
+                const unlocked = state.unlockedChars.includes(c.id);
+                const selected = state.selectedChar === c.id;
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-xl border flex flex-col items-center text-center cursor-pointer transition ${
+                    selected ? 'border-indigo-500 bg-indigo-950/40 ring-2 ring-indigo-500' :
+                    unlocked ? 'border-slate-700 bg-slate-900 hover:border-slate-500' : 'border-slate-800 bg-slate-950 opacity-40 grayscale'
+                }`;
+                card.innerHTML = `
+                    <span class="text-3xl my-1">${c.icon}</span>
+                    <span class="text-xs font-bold text-white">${c.name}</span>
+                    <span class="text-[10px] text-slate-400 mt-1">${c.desc}</span>
+                    <span class="text-[9px] mt-2 px-2 py-0.5 rounded ${selected ? 'bg-indigo-500 text-white' : unlocked ? 'bg-slate-700 text-slate-300' : 'bg-slate-800 text-slate-500'}">
+                        ${selected ? '使用中' : unlocked ? '選擇' : '未解鎖'}
+                    </span>
+                `;
+                if (unlocked) {
+                    card.onclick = () => {
+                        state.selectedChar = c.id;
+                        saveState();
+                        renderBag();
+                    };
+                }
+                charGrid.appendChild(card);
+            });
+
+            const weaponGrid = document.getElementById('weapon-grid');
+            weaponGrid.innerHTML = '';
+            state.inventoryWeapons.forEach((invItem, idx) => {
+                const baseW = WEAPONS.find(w => w.id === invItem.id) || WEAPONS[0];
+                const rarityInfo = RARITY_CONFIG[invItem.rarity] || RARITY_CONFIG.common;
+                const selected = state.selectedWeaponIndex === idx;
+
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-xl border flex flex-col items-center text-center cursor-pointer transition ${
+                    selected ? 'border-amber-500 bg-amber-950/40 ring-2 ring-amber-500' : 'border-slate-700 bg-slate-900 hover:border-slate-500'
+                }`;
+                card.innerHTML = `
+                    <span class="text-3xl my-1">${baseW.icon}</span>
+                    <span class="text-xs font-bold text-white">${baseW.name}</span>
+                    <span class="text-[10px] ${rarityInfo.color} font-bold">★ ${rarityInfo.label} (攻x${rarityInfo.atkMult})</span>
+                    <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-amber-300 my-0.5">${baseW.dirLabel}</span>
+                    <span class="text-[10px] text-slate-400 mt-0.5">${baseW.desc}</span>
+                    <span class="text-[9px] mt-2 px-2 py-0.5 rounded ${selected ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-700 text-slate-300'}">
+                        ${selected ? '已裝備' : '裝備'}
+                    </span>
+                `;
+                card.onclick = () => {
+                    state.selectedWeaponIndex = idx;
+                    saveState();
+                    renderBag();
+                };
+                weaponGrid.appendChild(card);
+            });
+        }
+
+        function renderTalents() {
+            const grid = document.getElementById('talent-grid');
+            grid.innerHTML = '';
+
+            TALENTS.forEach(t => {
+                const curLv = state.talents[t.id] || 0;
+                const isMax = curLv >= t.maxLv;
+                const cost = t.costBase + curLv * t.costInc;
+
+                const card = document.createElement('div');
+                card.className = 'bg-slate-900 border border-slate-800 p-3 rounded-xl flex items-center justify-between gap-3';
+
+                card.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="text-3xl p-2 rounded-xl bg-slate-950 border border-slate-800">${t.icon}</span>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h4 class="text-xs font-bold text-white">${t.name}</h4>
+                                <span class="text-[10px] px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">Lv.${curLv}/${t.maxLv}</span>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-0.5">${t.desc}</p>
+                        </div>
+                    </div>
+                    <button class="px-3 py-2 rounded-xl text-xs font-bold transition flex flex-col items-center ${
+                        isMax ? 'bg-slate-800 text-slate-500 cursor-not-allowed' :
+                        state.coins >= cost ? 'bg-purple-600 hover:bg-purple-500 text-white shadow-lg active:scale-95' : 'bg-slate-800 text-slate-500 border border-slate-700'
+                    }">
+                        <span>${isMax ? '已滿級' : '升級'}</span>
+                        ${!isMax ? `<span class="text-[9px] flex items-center gap-1 font-normal"><i class="fa-solid fa-coins text-amber-400"></i>${cost}</span>` : ''}
+                    </button>
+                `;
+
+                const btn = card.querySelector('button');
+                if (!isMax && state.coins >= cost) {
+                    btn.onclick = () => {
+                        state.coins -= cost;
+                        state.talents[t.id] = curLv + 1;
+                        saveState();
+                        renderTalents();
+                    };
+                }
+                grid.appendChild(card);
+            });
+        }
+
+        function renderStages() {
+            const grid = document.getElementById('stage-grid');
+            grid.innerHTML = '';
+
+            STAGES.forEach(s => {
+                const selected = state.selectedStageId === s.id;
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-2xl border cursor-pointer transition transform hover:scale-105 active:scale-95 flex flex-col justify-between ${
+                    selected ? 'bg-amber-950/40 border-amber-500 ring-2 ring-amber-500' : 'bg-slate-900 border-slate-800 hover:border-slate-700'
+                }`;
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold px-2.5 py-1 rounded-full ${selected ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-400'}">
+                                ${selected ? '當前選擇' : '選擇關卡'}
+                            </span>
+                            <span class="text-xs text-rose-400 font-bold">Boss: ${s.bossName}</span>
+                        </div>
+                        <h3 class="text-base font-black text-white mb-1">${s.name}</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-3">${s.desc}</p>
+                    </div>
+                    <div class="text-[10px] text-slate-500 border-t border-slate-800/80 pt-2 flex justify-between">
+                        <span>怪生命: x${s.hpMult}</span>
+                        <span>怪移速: x${s.spdMult}</span>
+                    </div>
+                `;
+
+                card.onclick = () => {
+                    state.selectedStageId = s.id;
+                    saveState();
+                    renderStages();
+                };
+                grid.appendChild(card);
+            });
+        }
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let gameLoopId;
+        let isPaused = false;
+
+        let player, enemies, bullets, expGems, particles, fireZones, bosses, spirits;
+        let keys = {};
+        let touchStick = { x: 0, y: 0, active: false };
+        let gameTime = 0, gameKills = 0, sessionCoins = 0;
+        let gameTimerInterval;
+
+        let isHordeActive = false;
+        let hordeTimer = 0;
+        let nextHordeTime = 30;
+
+        let attackCooldowns = {};
+        let currentStage = STAGES[0];
+
+        // In-game skill levels
+        let inGameSkills = {};
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        window.addEventListener('keydown', e => {
+            keys[e.code] = true;
+            if (e.code === 'KeyP' || e.code === 'Escape') {
+                if (!gameView.classList.contains('hidden') && levelModal.classList.contains('hidden')) {
+                    togglePauseMenu();
+                }
+            }
+        });
+        window.addEventListener('keyup', e => keys[e.code] = false);
+
+        const joystickZone = document.getElementById('joystick-zone');
+        const joystickStick = document.getElementById('joystick-stick');
+
+        joystickZone.addEventListener('touchstart', e => {
+            touchStick.active = true;
+            updateJoystick(e.touches[0]);
+        });
+        joystickZone.addEventListener('touchmove', e => {
+            if (touchStick.active) updateJoystick(e.touches[0]);
+        });
+        joystickZone.addEventListener('touchend', () => {
+            touchStick.active = false;
+            touchStick.x = 0;
+            touchStick.y = 0;
+            joystickStick.style.transform = `translate(0px, 0px)`;
+        });
+
+        function updateJoystick(touch) {
+            const rect = joystickZone.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            let dx = touch.clientX - centerX;
+            let dy = touch.clientY - centerY;
+            const dist = Math.hypot(dx, dy);
+            const maxDist = 40;
+
+            if (dist > maxDist) {
+                dx = (dx / dist) * maxDist;
+                dy = (dy / dist) * maxDist;
+            }
+            joystickStick.style.transform = `translate(${dx}px, ${dy}px)`;
+            touchStick.x = dx / maxDist;
+            touchStick.y = dy / maxDist;
+        }
+
+        function startGame() {
+            resizeCanvas();
+            isPaused = false;
+            gameTime = 0;
+            gameKills = 0;
+            sessionCoins = 0;
+
+            currentStage = STAGES.find(s => s.id === state.selectedStageId) || STAGES[0];
+
+            isHordeActive = false;
+            hordeTimer = 0;
+            nextHordeTime = 30;
+            document.getElementById('horde-alert-banner').classList.add('hidden');
+            document.getElementById('boss-alert-banner').classList.add('hidden');
+            document.getElementById('boss-hud').classList.add('hidden');
+
+            const stats = getAgentStats();
+
+            player = {
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+                radius: 18,
+                hp: stats.hp,
+                maxHp: stats.hp,
+                speed: parseFloat(stats.spd),
+                atkMult: stats.atk / 100,
+                cdMult: 1.0 - (stats.char.baseCd + (state.talents.t_cd || 0) * 0.02),
+                level: 1,
+                exp: 0,
+                nextExp: 20,
+                icon: stats.char.icon,
+                color: stats.char.color,
+                facingAngle: 0,
+                attackRange: 160,
+                equippedWeapon: stats.weapon
+            };
+
+            // Reset skill tracker
+            inGameSkills = {
+                mainWeaponStars: 1,
+                mainWeaponEvolved: false,
+                
+                // Actives
+                lightningStars: 0, lightningEvolved: false,
+                molotovStars: 0, molotovEvolved: false,
+                soccerStars: 0, soccerEvolved: false,
+                spinning_topStars: 0, spinning_topEvolved: false,
+                spirit_fireStars: 0, spirit_fireEvolved: false,
+                spirit_poisonStars: 0, spirit_poisonEvolved: false,
+                spirit_iceStars: 0, spirit_iceEvolved: false,
+                whistle_arrowStars: 0, whistle_arrowEvolved: false,
+
+                // Passives
+                speedStars: 0,
+                max_hpStars: 0,
+                magnetStars: 0,
+                cooldownStars: 0,
+                mightStars: 0,
+                areaStars: 0
+            };
+
+            attackCooldowns = {};
+            enemies = [];
+            bullets = [];
+            expGems = [];
+            particles = [];
+            fireZones = [];
+            bosses = [];
+            spirits = [];
+
+            updateHUD();
+
+            clearInterval(gameTimerInterval);
+            gameTimerInterval = setInterval(() => {
+                if (!isPaused) {
+                    gameTime++;
+                    document.getElementById('hud-time').innerText = formatTime(gameTime);
+
+                    // Horde warnings
+                    if (gameTime === nextHordeTime - 3) {
+                        AudioEngine.playAlarm();
+                        document.getElementById('horde-alert-banner').classList.remove('hidden');
+                    } else if (gameTime === nextHordeTime) {
+                        isHordeActive = true;
+                        hordeTimer = 10;
+                    }
+
+                    if (isHordeActive) {
+                        hordeTimer--;
+                        if (hordeTimer <= 0) {
+                            isHordeActive = false;
+                            document.getElementById('horde-alert-banner').classList.add('hidden');
+                            nextHordeTime = gameTime + 35;
+                        }
+                    }
+
+                    // Boss Spawning (Every 60 seconds)
+                    if (gameTime > 0 && gameTime % 60 === 0) {
+                        spawnBoss();
+                    }
+                }
+            }, 1000);
+
+            if (gameLoopId) cancelAnimationFrame(gameLoopId);
+            gameLoop();
+        }
+
+        function togglePauseMenu() {
+            if (gameView.classList.contains('hidden')) return;
+            isPaused = !isPaused;
+
+            if (isPaused) {
+                renderPauseSkillGrid();
+                pauseModal.classList.remove('hidden');
+            } else {
+                pauseModal.classList.add('hidden');
+                gameLoop();
+            }
+        }
+
+        function renderPauseSkillGrid() {
+            // Count Active & Passive Skills
+            const activeList = [];
+            const passiveList = [];
+
+            // Main Weapon
+            const mainW = player.equippedWeapon;
+            activeList.push({
+                name: inGameSkills.mainWeaponEvolved ? mainW.evoName : mainW.name,
+                icon: inGameSkills.mainWeaponEvolved ? mainW.evoIcon : mainW.icon,
+                stars: inGameSkills.mainWeaponStars,
+                isEvo: inGameSkills.mainWeaponEvolved,
+                isMain: true
+            });
+
+            // Actives
+            IN_GAME_SKILLS.filter(s => s.category === 'active').forEach(s => {
+                const stars = inGameSkills[`${s.id}Stars`] || 0;
+                if (stars > 0) {
+                    const isEvo = inGameSkills[`${s.id}Evolved`];
+                    activeList.push({
+                        name: isEvo ? s.evoName : s.name,
+                        icon: isEvo ? s.evoIcon : s.icon,
+                        stars,
+                        isEvo
+                    });
+                }
+            });
+
+            // Passives
+            IN_GAME_SKILLS.filter(s => s.category === 'passive').forEach(s => {
+                const stars = inGameSkills[`${s.id}Stars`] || 0;
+                if (stars > 0) {
+                    passiveList.push({ name: s.name, icon: s.icon, stars });
+                }
+            });
+
+            document.getElementById('active-skill-count-badge').innerText = `${activeList.length}/5`;
+            document.getElementById('passive-skill-count-badge').innerText = `${passiveList.length}/6`;
+
+            const activeGrid = document.getElementById('pause-active-skills-grid');
+            activeGrid.innerHTML = '';
+            for (let i = 0; i < 5; i++) {
+                const item = activeList[i];
+                const slot = document.createElement('div');
+                slot.className = `p-2 rounded-xl border flex flex-col items-center justify-center text-center ${
+                    item ? (item.isEvo ? 'bg-amber-950/60 border-amber-400' : 'bg-slate-950 border-rose-500/40') : 'bg-slate-950/40 border-slate-800 border-dashed'
+                }`;
+                if (item) {
+                    slot.innerHTML = `
+                        <span class="text-2xl">${item.icon}</span>
+                        <span class="text-[10px] font-bold text-white truncate w-full mt-1">${item.name}</span>
+                        <span class="text-[9px] text-amber-300 font-bold">${item.isEvo ? '🔥超武' : `⭐x${item.stars}`}</span>
+                    `;
+                } else {
+                    slot.innerHTML = `<span class="text-xs text-slate-600 font-mono">Slot ${i+1}</span>`;
+                }
+                activeGrid.appendChild(slot);
+            }
+
+            const passiveGrid = document.getElementById('pause-passive-skills-grid');
+            passiveGrid.innerHTML = '';
+            for (let i = 0; i < 6; i++) {
+                const item = passiveList[i];
+                const slot = document.createElement('div');
+                slot.className = `p-2 rounded-xl border flex flex-col items-center justify-center text-center ${
+                    item ? 'bg-slate-950 border-sky-500/40' : 'bg-slate-950/40 border-slate-800 border-dashed'
+                }`;
+                if (item) {
+                    slot.innerHTML = `
+                        <span class="text-2xl">${item.icon}</span>
+                        <span class="text-[10px] font-bold text-white truncate w-full mt-1">${item.name}</span>
+                        <span class="text-[9px] text-sky-300 font-bold">⭐x${item.stars}</span>
+                    `;
+                } else {
+                    slot.innerHTML = `<span class="text-xs text-slate-600 font-mono">Slot ${i+1}</span>`;
+                }
+                passiveGrid.appendChild(slot);
+            }
+        }
+
+        function spawnEnemy() {
+            const maxCap = isHordeActive ? 35 : 20;
+            if (enemies.length >= maxCap) return;
+
+            const angle = Math.random() * Math.PI * 2;
+            const dist = Math.hypot(canvas.width, canvas.height) / 2 + 60;
+            const x = player.x + Math.cos(angle) * dist;
+            const y = player.y + Math.sin(angle) * dist;
+
+            let type = 'zombie';
+            let hp = (25 + gameTime * 0.7) * currentStage.hpMult;
+            let speed = (1.5 + Math.random() * 0.3) * currentStage.spdMult;
+            let radius = 15;
+            let color = '#22c55e';
+
+            if (gameTime > 15 && Math.random() < 0.35) {
+                type = 'dog';
+                hp = (18 + gameTime * 0.5) * currentStage.hpMult;
+                speed = 2.5 * currentStage.spdMult;
+                radius = 13;
+                color = '#f97316';
+            } else if (gameTime > 35 && Math.random() < 0.22) {
+                type = 'giant';
+                hp = (120 + gameTime * 2.2) * currentStage.hpMult;
+                speed = 1.0 * currentStage.spdMult;
+                radius = 24;
+                color = '#a855f7';
+            }
+
+            enemies.push({ x, y, hp, maxHp: hp, speed, radius, color, type, knockbackX: 0, knockbackY: 0, animTimer: Math.random() * 10 });
+        }
+
+        function spawnBoss() {
+            AudioEngine.playAlarm();
+            const bossBanner = document.getElementById('boss-alert-banner');
+            bossBanner.classList.remove('hidden');
+            setTimeout(() => bossBanner.classList.add('hidden'), 3500);
+
+            const angle = Math.random() * Math.PI * 2;
+            const dist = 300;
+            const x = player.x + Math.cos(angle) * dist;
+            const y = player.y + Math.sin(angle) * dist;
+
+            const bossHp = (1000 + gameTime * 25) * currentStage.hpMult;
+            const boss = {
+                x, y,
+                hp: bossHp,
+                maxHp: bossHp,
+                speed: 1.2 * currentStage.spdMult,
+                radius: 42,
+                color: '#ef4444',
+                name: `💀 ${currentStage.bossName} (第 ${Math.floor(gameTime/60)} 波)`,
+                attackTimer: 0
+            };
+
+            bosses.push(boss);
+            updateBossHUD();
+        }
+
+        function updateBossHUD() {
+            const bossHud = document.getElementById('boss-hud');
+            if (bosses.length === 0) {
+                bossHud.classList.add('hidden');
+                return;
+            }
+            bossHud.classList.remove('hidden');
+            const mainBoss = bosses[0];
+            document.getElementById('boss-hud-name').innerText = mainBoss.name;
+            document.getElementById('boss-hud-hp-text').innerText = `${Math.ceil(Math.max(0, mainBoss.hp))}/${Math.ceil(mainBoss.maxHp)}`;
+            const pct = Math.min(100, Math.max(0, (mainBoss.hp / mainBoss.maxHp) * 100));
+            document.getElementById('boss-hud-hp-bar').style.width = `${pct}%`;
+        }
+
+        function createParticles(x, y, color, count = 6, speedMult = 1) {
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = (Math.random() * 3 + 1) * speedMult;
+                particles.push({
+                    x, y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    color,
+                    radius: Math.random() * 3 + 2,
+                    life: 18
+                });
+            }
+        }
+
+        function drawQVersionWeapon(weaponId, isEvolved) {
+            ctx.save();
+            if (weaponId === 'bat') {
+                // Wooden / Holy Spiked Bat
+                ctx.fillStyle = isEvolved ? '#fbbf24' : '#b45309';
+                ctx.fillRect(8, -3, 18, 6);
+                ctx.fillStyle = '#f59e0b';
+                ctx.fillRect(20, -5, 10, 10);
+                // Metal Spikes
+                if (isEvolved) {
+                    ctx.fillStyle = '#ef4444';
+                    ctx.beginPath();
+                    ctx.arc(28, -5, 3, 0, Math.PI * 2);
+                    ctx.arc(28, 5, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            } else if (weaponId === 'gun') {
+                // Realistic Revolver / Gatling
+                ctx.fillStyle = isEvolved ? '#dc2626' : '#475569';
+                ctx.fillRect(10, -4, 16, 8);
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(22, -3, 8, 4);
+            } else if (weaponId === 'shotgun') {
+                // Double Barrel Shotgun
+                ctx.fillStyle = '#78350f'; // wood grip
+                ctx.fillRect(8, -3, 8, 6);
+                ctx.fillStyle = '#94a3b8'; // steel barrel
+                ctx.fillRect(16, -5, 16, 4);
+                ctx.fillRect(16, 1, 16, 4);
+            } else if (weaponId === 'shuriken') {
+                // Metal Ninja Star
+                ctx.fillStyle = isEvolved ? '#38bdf8' : '#cbd5e1';
+                ctx.beginPath();
+                ctx.arc(16, 0, 7, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (weaponId === 'lightsaber') {
+                // Plasma Sword Blade
+                ctx.fillStyle = '#64748b'; // handle
+                ctx.fillRect(8, -2, 8, 4);
+                ctx.fillStyle = isEvolved ? '#38bdf8' : '#34d399'; // blade glow
+                ctx.shadowColor = isEvolved ? '#38bdf8' : '#34d399';
+                ctx.shadowBlur = 10;
+                ctx.fillRect(16, -3, 20, 6);
+            }
+            ctx.restore();
+        }
+
+        function updateAndDrawSpirits() {
+            const activeSpirits = [];
+            if (inGameSkills.spirit_fireStars > 0) activeSpirits.push({ id: 'fire', color: '#ef4444', glow: '#f97316', eye: '#fef08a' });
+            if (inGameSkills.spirit_poisonStars > 0) activeSpirits.push({ id: 'poison', color: '#a855f7', glow: '#c084fc', eye: '#e9d5ff' });
+            if (inGameSkills.spirit_iceStars > 0) activeSpirits.push({ id: 'ice', color: '#38bdf8', glow: '#7dd3fc', eye: '#ffffff' });
+
+            const count = activeSpirits.length;
+            if (count === 0) return;
+
+            const timeAcc = Date.now() * 0.003;
+            const orbitRadius = 45;
+
+            activeSpirits.forEach((sp, idx) => {
+                const angle = timeAcc + (idx * Math.PI * 2) / count;
+                const floatY = Math.sin(timeAcc * 2 + idx) * 4;
+                const sx = player.x + Math.cos(angle) * orbitRadius;
+                const sy = player.y + Math.sin(angle) * orbitRadius + floatY;
+
+                ctx.save();
+                ctx.shadowColor = sp.glow;
+                ctx.shadowBlur = 12;
+
+                // Spirit Fairy Body (Orb with Cute Wings)
+                ctx.fillStyle = sp.color;
+                ctx.beginPath();
+                ctx.arc(sx, sy, 8, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Fairy Wings
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.beginPath();
+                ctx.ellipse(sx - 7, sy - 3, 5, 2, -Math.PI / 4, 0, Math.PI * 2);
+                ctx.ellipse(sx + 7, sy - 3, 5, 2, Math.PI / 4, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Cute Glowing Eyes
+                ctx.fillStyle = sp.eye;
+                ctx.beginPath();
+                ctx.arc(sx - 2, sy - 1, 1.5, 0, Math.PI * 2);
+                ctx.arc(sx + 2, sy - 1, 1.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            });
+        }
+
+        function triggerAttacks() {
+            const now = Date.now();
+
+            const extraMight = 1.0 + (inGameSkills.mightStars * 0.20);
+            const extraArea = 1.0 + (inGameSkills.areaStars * 0.20);
+            const totalAtk = player.atkMult * extraMight;
+            const cdBonus = player.cdMult * Math.pow(0.88, inGameSkills.cooldownStars);
+
+            const wId = player.equippedWeapon.id;
+            const wStars = inGameSkills.mainWeaponStars;
+            const isEvolved = inGameSkills.mainWeaponEvolved;
+
+            // ================= 1. EQUIPPED MAIN WEAPON =================
+            if (now > (attackCooldowns.mainWeapon || 0)) {
+                let cdBase = 1000;
+                if (wId === 'bat') cdBase = isEvolved ? 500 : 850;
+                else if (wId === 'gun') cdBase = isEvolved ? 150 : 380;
+                else if (wId === 'shotgun') cdBase = isEvolved ? 450 : 900;
+                else if (wId === 'shuriken') cdBase = isEvolved ? 550 : 1000;
+                else if (wId === 'lightsaber') cdBase = isEvolved ? 350 : 750;
+
+                attackCooldowns.mainWeapon = now + cdBase * cdBonus;
+                const allTargets = [...enemies, ...bosses];
+
+                if (wId === 'bat') {
+                    const range = (110 + wStars * 15) * extraArea * (isEvolved ? 1.5 : 1.0);
+                    const damage = (38 + wStars * 15) * totalAtk * (isEvolved ? 2.5 : 1.0);
+                    const sweepAngle = isEvolved ? Math.PI * 2 : Math.PI * 0.8;
+
+                    allTargets.forEach(e => {
+                        const dist = Math.hypot(e.x - player.x, e.y - player.y);
+                        if (dist < range + e.radius) {
+                            const angleToE = Math.atan2(e.y - player.y, e.x - player.x);
+                            let diff = angleToE - player.facingAngle;
+                            while (diff < -Math.PI) diff += Math.PI * 2;
+                            while (diff > Math.PI) diff -= Math.PI * 2;
+
+                            if (isEvolved || Math.abs(diff) < sweepAngle / 2) {
+                                e.hp -= damage;
+                                e.knockbackX = Math.cos(angleToE) * (isEvolved ? 24 : 14);
+                                e.knockbackY = Math.sin(angleToE) * (isEvolved ? 24 : 14);
+                                createParticles(e.x, e.y, isEvolved ? '#ef4444' : '#f59e0b', 5, 1.2);
+                                AudioEngine.playHit();
+                            }
+                        }
+                    });
+                } else if (wId === 'gun') {
+                    const count = isEvolved ? 3 : 1;
+                    for (let c = 0; c < count; c++) {
+                        const spread = (c - (count - 1) / 2) * 0.12;
+                        bullets.push({
+                            x: player.x, y: player.y,
+                            vx: Math.cos(player.facingAngle + spread) * 14,
+                            vy: Math.sin(player.facingAngle + spread) * 14,
+                            damage: (28 + wStars * 9) * totalAtk * (isEvolved ? 2.0 : 1.0),
+                            radius: isEvolved ? 7 : 4,
+                            color: isEvolved ? '#ef4444' : '#facc15',
+                            life: 50, type: 'gun'
+                        });
+                    }
+                } else if (wId === 'shotgun') {
+                    const pellets = (5 + wStars * 2) * (isEvolved ? 2 : 1);
+                    const coneAngle = Math.PI * 0.35;
+                    for (let p = 0; p < pellets; p++) {
+                        const spread = (Math.random() - 0.5) * coneAngle;
+                        const spd = 10 + Math.random() * 5;
+                        bullets.push({
+                            x: player.x, y: player.y,
+                            vx: Math.cos(player.facingAngle + spread) * spd,
+                            vy: Math.sin(player.facingAngle + spread) * spd,
+                            damage: (20 + wStars * 6) * totalAtk * (isEvolved ? 1.8 : 1.0),
+                            radius: 4, color: '#f97316', life: 25, type: 'shotgun'
+                        });
+                    }
+                } else if (wId === 'shuriken') {
+                    const count = isEvolved ? 3 : 1;
+                    let targetAngle = player.facingAngle;
+                    let target = null;
+                    let minDist = Infinity;
+                    allTargets.forEach(e => {
+                        const d = Math.hypot(e.x - player.x, e.y - player.y);
+                        if (d < minDist) { minDist = d; target = e; }
+                    });
+                    if (target) targetAngle = Math.atan2(target.y - player.y, target.x - player.x);
+
+                    for (let i = 0; i < count; i++) {
+                        const spread = count > 1 ? (i - (count - 1) / 2) * 0.2 : 0;
+                        const angle = targetAngle + spread;
+                        bullets.push({
+                            x: player.x, y: player.y,
+                            vx: Math.cos(angle) * 10, vy: Math.sin(angle) * 10,
+                            damage: (32 + wStars * 10) * totalAtk * (isEvolved ? 2.2 : 1.0),
+                            radius: isEvolved ? 12 : 8,
+                            color: isEvolved ? '#38bdf8' : '#a855f7',
+                            life: 90, type: 'shuriken'
+                        });
+                    }
+                } else if (wId === 'lightsaber') {
+                    const slashRadius = (90 + wStars * 15) * extraArea;
+                    const damage = (40 + wStars * 14) * totalAtk * (isEvolved ? 2.4 : 1.0);
+                    allTargets.forEach(e => {
+                        if (Math.hypot(e.x - player.x, e.y - player.y) < slashRadius + e.radius) {
+                            e.hp -= damage;
+                            createParticles(e.x, e.y, '#38bdf8', 6, 1.5);
+                            AudioEngine.playHit();
+                        }
+                    });
+                }
+            }
+
+            // ================= 2. IN-GAME ACTIVE SKILLS =================
+            // Lightning
+            if (inGameSkills.lightningStars > 0 && now > (attackCooldowns.lightning || 0)) {
+                const cdLight = inGameSkills.lightningEvolved ? 450 : 1200;
+                attackCooldowns.lightning = now + cdLight * cdBonus;
+                const count = (inGameSkills.lightningStars + 1) * (inGameSkills.lightningEvolved ? 3 : 1);
+                const targets = [...enemies, ...bosses];
+                for (let i = 0; i < count; i++) {
+                    if (targets.length === 0) break;
+                    const randE = targets[Math.floor(Math.random() * targets.length)];
+                    randE.hp -= (32 + inGameSkills.lightningStars * 12) * totalAtk * (inGameSkills.lightningEvolved ? 2.4 : 1.0);
+                    createParticles(randE.x, randE.y, '#38bdf8', 8, 1.5);
+                    AudioEngine.playHit();
+                }
+            }
+
+            // Molotov
+            if (inGameSkills.molotovStars > 0 && now > (attackCooldowns.molotov || 0)) {
+                attackCooldowns.molotov = now + (inGameSkills.molotovEvolved ? 1200 : 2500) * cdBonus;
+                const count = inGameSkills.molotovStars;
+                for (let i = 0; i < count; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const dist = 60 + Math.random() * 120;
+                    fireZones.push({
+                        x: player.x + Math.cos(angle) * dist,
+                        y: player.y + Math.sin(angle) * dist,
+                        radius: (45 + inGameSkills.molotovStars * 8) * extraArea * (inGameSkills.molotovEvolved ? 1.6 : 1.0),
+                        damage: (8 + inGameSkills.molotovStars * 4) * totalAtk,
+                        life: 180,
+                        isEvolved: inGameSkills.molotovEvolved
+                    });
+                }
+            }
+
+            // Soccer Ball
+            if (inGameSkills.soccerStars > 0 && now > (attackCooldowns.soccer || 0)) {
+                attackCooldowns.soccer = now + 4000 * cdBonus;
+                const count = inGameSkills.soccerStars * (inGameSkills.soccerEvolved ? 2 : 1);
+                for (let i = 0; i < count; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    bullets.push({
+                        x: player.x, y: player.y,
+                        vx: Math.cos(angle) * 8, vy: Math.sin(angle) * 8,
+                        damage: (30 + inGameSkills.soccerStars * 10) * totalAtk,
+                        radius: 10,
+                        color: inGameSkills.soccerEvolved ? '#f59e0b' : '#38bdf8',
+                        life: 300, type: 'soccer'
+                    });
+                }
+            }
+
+            // Whistle Arrow
+            if (inGameSkills.whistle_arrowStars > 0 && now > (attackCooldowns.whistle_arrow || 0)) {
+                attackCooldowns.whistle_arrow = now + (inGameSkills.whistle_arrowEvolved ? 800 : 1800) * cdBonus;
+                bullets.push({
+                    x: player.x, y: player.y,
+                    vx: Math.cos(player.facingAngle) * 12, vy: Math.sin(player.facingAngle) * 12,
+                    damage: (45 + inGameSkills.whistle_arrowStars * 15) * totalAtk * (inGameSkills.whistle_arrowEvolved ? 2.2 : 1.0),
+                    radius: 6, color: '#e0e7ff', life: 200, type: 'whistle_arrow'
+                });
+            }
+
+            // Spirit Fire, Poison, Ice (Flying companions trigger attacks)
+            if (inGameSkills.spirit_fireStars > 0 && now > (attackCooldowns.spirit_fire || 0)) {
+                attackCooldowns.spirit_fire = now + 1200 * cdBonus;
+                bullets.push({
+                    x: player.x, y: player.y - 30,
+                    vx: Math.cos(player.facingAngle) * 9, vy: Math.sin(player.facingAngle) * 9,
+                    damage: (35 + inGameSkills.spirit_fireStars * 10) * totalAtk,
+                    radius: 8, color: '#ef4444', life: 70, type: 'spirit_fire'
+                });
+            }
+            if (inGameSkills.spirit_poisonStars > 0 && now > (attackCooldowns.spirit_poison || 0)) {
+                attackCooldowns.spirit_poison = now + 1800 * cdBonus;
+                fireZones.push({
+                    x: player.x, y: player.y,
+                    radius: (80 + inGameSkills.spirit_poisonStars * 15) * extraArea,
+                    damage: (6 + inGameSkills.spirit_poisonStars * 3) * totalAtk,
+                    life: 90, color: 'rgba(168, 85, 247, 0.35)', isPoison: true
+                });
+            }
+            if (inGameSkills.spirit_iceStars > 0 && now > (attackCooldowns.spirit_ice || 0)) {
+                attackCooldowns.spirit_ice = now + 1400 * cdBonus;
+                bullets.push({
+                    x: player.x - 20, y: player.y,
+                    vx: Math.cos(player.facingAngle) * 8, vy: Math.sin(player.facingAngle) * 8,
+                    damage: (28 + inGameSkills.spirit_iceStars * 8) * totalAtk,
+                    radius: 7, color: '#38bdf8', life: 70, type: 'spirit_ice'
+                });
+            }
+        }
+
+        function gameLoop() {
+            if (isPaused) return;
+
+            ctx.fillStyle = currentStage.bg;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Stage Background Grid Lines
+            ctx.strokeStyle = currentStage.gridColor;
+            ctx.lineWidth = 1;
+            const gridSize = 60;
+            for (let x = 0; x < canvas.width; x += gridSize) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+            }
+            for (let y = 0; y < canvas.height; y += gridSize) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+            }
+
+            // Spawn mobs
+            if (Math.random() < (isHordeActive ? 0.28 : 0.09)) {
+                spawnEnemy();
+            }
+
+            // Player Movement
+            let moveX = 0, moveY = 0;
+            if (keys['KeyW'] || keys['ArrowUp']) moveY -= 1;
+            if (keys['KeyS'] || keys['ArrowDown']) moveY += 1;
+            if (keys['KeyA'] || keys['ArrowLeft']) moveX -= 1;
+            if (keys['KeyD'] || keys['ArrowRight']) moveX += 1;
+
+            if (touchStick.active) {
+                moveX = touchStick.x;
+                moveY = touchStick.y;
+            }
+
+            const moveLen = Math.hypot(moveX, moveY);
+            if (moveLen > 0) {
+                const normX = moveX / moveLen;
+                const normY = moveY / moveLen;
+                const extraSpd = 1.0 + (inGameSkills.speedStars * 0.15) + (state.talents.t_spd * 0.03);
+                const speed = player.speed * extraSpd;
+                player.x += normX * speed;
+                player.y += normY * speed;
+                player.facingAngle = Math.atan2(normY, normX);
+            }
+
+            player.x = Math.max(player.radius, Math.min(canvas.width - player.radius, player.x));
+            player.y = Math.max(player.radius, Math.min(canvas.height - player.radius, player.y));
+
+            // Range Indicator
+            ctx.save();
+            ctx.strokeStyle = inGameSkills.mainWeaponEvolved ? 'rgba(245, 158, 11, 0.45)' : 'rgba(99, 102, 241, 0.3)';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([6, 6]);
+            ctx.beginPath();
+            ctx.arc(player.x, player.y, player.attackRange * (1 + inGameSkills.areaStars * 0.2), 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Aim Indicator
+            ctx.fillStyle = 'rgba(251, 191, 36, 0.8)';
+            ctx.beginPath();
+            ctx.arc(player.x + Math.cos(player.facingAngle) * 32, player.y + Math.sin(player.facingAngle) * 32, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            // Render Fire / Poison Zones
+            for (let i = fireZones.length - 1; i >= 0; i--) {
+                const zone = fireZones[i];
+                zone.life--;
+
+                ctx.save();
+                ctx.fillStyle = zone.color || (zone.isEvolved ? 'rgba(239, 68, 68, 0.45)' : 'rgba(245, 158, 11, 0.35)');
+                ctx.beginPath();
+                ctx.arc(zone.x, zone.y, zone.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                if (zone.life % 15 === 0) {
+                    [...enemies, ...bosses].forEach(e => {
+                        if (Math.hypot(e.x - zone.x, e.y - zone.y) < zone.radius + e.radius) {
+                            e.hp -= zone.damage;
+                            createParticles(e.x, e.y, zone.isPoison ? '#a855f7' : '#ef4444', 2);
+                        }
+                    });
+                }
+                if (zone.life <= 0) fireZones.splice(i, 1);
+            }
+
+            // Draw Flying Spirit Companions (Elves)
+            updateAndDrawSpirits();
+
+            // Draw Player Character & Equipped Weapon
+            ctx.save();
+            ctx.translate(player.x, player.y);
+
+            // Shadow
+            ctx.fillStyle = 'rgba(0,0,0,0.35)';
+            ctx.beginPath();
+            ctx.ellipse(0, player.radius * 0.8, player.radius * 0.9, player.radius * 0.4, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Body
+            ctx.rotate(player.facingAngle);
+            ctx.fillStyle = player.color;
+            ctx.beginPath();
+            ctx.roundRect(-14, -12, 28, 24, 8);
+            ctx.fill();
+
+            // Head / Visor
+            ctx.fillStyle = '#fde047';
+            ctx.beginPath();
+            ctx.arc(0, 0, 12, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.roundRect(2, -6, 10, 12, 4);
+            ctx.fill();
+
+            ctx.fillStyle = '#38bdf8';
+            ctx.beginPath();
+            ctx.arc(7, -2, 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Draw Q-version Realistic Weapon in Hand
+            drawQVersionWeapon(player.equippedWeapon.id, inGameSkills.mainWeaponEvolved);
+
+            ctx.restore();
+
+            // BOSS Logic & Render
+            for (let b = bosses.length - 1; b >= 0; b--) {
+                const boss = bosses[b];
+                const distToPlayer = Math.hypot(player.x - boss.x, player.y - boss.y);
+                const angle = Math.atan2(player.y - boss.y, player.x - boss.x);
+
+                boss.x += Math.cos(angle) * boss.speed;
+                boss.y += Math.sin(angle) * boss.speed;
+
+                boss.attackTimer++;
+                if (boss.attackTimer > 180) {
+                    boss.attackTimer = 0;
+                    for (let a = 0; a < 12; a++) {
+                        const bAngle = (a * Math.PI * 2) / 12;
+                        bullets.push({
+                            x: boss.x, y: boss.y,
+                            vx: Math.cos(bAngle) * 5, vy: Math.sin(bAngle) * 5,
+                            damage: 18, radius: 8, color: '#dc2626', life: 120, isHostile: true
+                        });
+                    }
+                }
+
+                // Draw Boss Body
+                ctx.save();
+                ctx.shadowColor = '#ef4444';
+                ctx.shadowBlur = 20;
+                ctx.fillStyle = boss.color;
+                ctx.beginPath();
+                ctx.arc(boss.x, boss.y, boss.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Boss Skulls / Horns Overlay
+                ctx.fillStyle = '#fef08a';
+                ctx.beginPath();
+                ctx.arc(boss.x - 12, boss.y - 10, 6, 0, Math.PI * 2);
+                ctx.arc(boss.x + 12, boss.y - 10, 6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                if (distToPlayer < player.radius + boss.radius) {
+                    player.hp -= 0.8;
+                    AudioEngine.playHit();
+                    updateHUD();
+                    if (player.hp <= 0) { endGame(); return; }
+                }
+
+                if (boss.hp <= 0) {
+                    gameKills += 5;
+                    sessionCoins += 150;
+                    createParticles(boss.x, boss.y, '#f59e0b', 30, 3);
+                    AudioEngine.playExplosion();
+                    expGems.push({ x: boss.x, y: boss.y, value: 300, radius: 10 });
+                    bosses.splice(b, 1);
+                    updateBossHUD();
+                } else {
+                    updateBossHUD();
+                }
+            }
+
+            // Normal Enemy Logic & Render (Optimized Monsters)
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                const e = enemies[i];
+
+                if (Math.abs(e.knockbackX) > 0.1 || Math.abs(e.knockbackY) > 0.1) {
+                    e.x += e.knockbackX;
+                    e.y += e.knockbackY;
+                    e.knockbackX *= 0.8;
+                    e.knockbackY *= 0.8;
+                } else {
+                    const angle = Math.atan2(player.y - e.y, player.x - e.x);
+                    e.x += Math.cos(angle) * e.speed;
+                    e.y += Math.sin(angle) * e.speed;
+                }
+
+                ctx.save();
+                ctx.fillStyle = e.color;
+                ctx.beginPath();
+                ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Monster Q-version Face Features
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(e.x - 4, e.y - 3, 3, 0, Math.PI * 2);
+                ctx.arc(e.x + 4, e.y - 3, 3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#000000';
+                ctx.beginPath();
+                ctx.arc(e.x - 4, e.y - 3, 1.5, 0, Math.PI * 2);
+                ctx.arc(e.x + 4, e.y - 3, 1.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                // HP Bar
+                if (e.hp < e.maxHp) {
+                    const barW = e.radius * 2;
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+                    ctx.fillRect(e.x - barW / 2, e.y - e.radius - 6, barW, 3);
+                    ctx.fillStyle = '#ef4444';
+                    ctx.fillRect(e.x - barW / 2, e.y - e.radius - 6, Math.max(0, (e.hp / e.maxHp) * barW), 3);
+                }
+
+                if (Math.hypot(player.x - e.x, player.y - e.y) < player.radius + e.radius) {
+                    player.hp -= 0.25;
+                    AudioEngine.playHit();
+                    updateHUD();
+                    if (player.hp <= 0) { endGame(); return; }
+                }
+
+                if (e.hp <= 0) {
+                    gameKills++;
+                    sessionCoins += Math.floor(Math.random() * 2) + 1;
+                    createParticles(e.x, e.y, e.color, 6);
+                    expGems.push({ x: e.x, y: e.y, value: 10, radius: 5 });
+                    enemies.splice(i, 1);
+                    document.getElementById('hud-kills').innerText = gameKills;
+                    document.getElementById('hud-coins').innerText = sessionCoins;
+                }
+            }
+
+            // Bullets Logic
+            triggerAttacks();
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                const b = bullets[i];
+                b.x += b.vx;
+                b.y += b.vy;
+                b.life--;
+
+                if (b.type === 'soccer') {
+                    if (b.x < 10 || b.x > canvas.width - 10) b.vx *= -1;
+                    if (b.y < 10 || b.y > canvas.height - 10) b.vy *= -1;
+                }
+
+                ctx.save();
+                ctx.fillStyle = b.color;
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                if (b.isHostile) {
+                    if (Math.hypot(player.x - b.x, player.y - b.y) < player.radius + b.radius) {
+                        player.hp -= b.damage;
+                        AudioEngine.playHit();
+                        updateHUD();
+                        bullets.splice(i, 1);
+                        if (player.hp <= 0) { endGame(); return; }
+                    }
+                } else {
+                    let hit = false;
+                    [...enemies, ...bosses].forEach(e => {
+                        if (Math.hypot(e.x - b.x, e.y - b.y) < e.radius + b.radius) {
+                            e.hp -= b.damage;
+                            AudioEngine.playHit();
+                            createParticles(b.x, b.y, b.color, 3);
+                            if (b.type !== 'shuriken' && b.type !== 'soccer' && b.type !== 'whistle_arrow') hit = true;
+                        }
+                    });
+
+                    if (hit || b.life <= 0) bullets.splice(i, 1);
+                }
+            }
+
+            // EXP Gems Updates
+            const magnetDist = 110 + (inGameSkills.magnetStars * 60) + ((state.talents.t_mag || 0) * 12);
+            for (let i = expGems.length - 1; i >= 0; i--) {
+                const gem = expGems[i];
+                const dist = Math.hypot(player.x - gem.x, player.y - gem.y);
+
+                if (dist < magnetDist) {
+                    const angle = Math.atan2(player.y - gem.y, player.x - gem.x);
+                    gem.x += Math.cos(angle) * 9;
+                    gem.y += Math.sin(angle) * 9;
+                }
+
+                ctx.fillStyle = '#f59e0b';
+                ctx.beginPath();
+                ctx.arc(gem.x, gem.y, gem.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                if (dist < player.radius + gem.radius) {
+                    player.exp += gem.value;
+                    AudioEngine.playExp();
+                    expGems.splice(i, 1);
+
+                    if (player.exp >= player.nextExp) levelUp();
+                    updateHUD();
+                }
+            }
+
+            // Particles Updates
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life--;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+                if (p.life <= 0) particles.splice(i, 1);
+            }
+
+            gameLoopId = requestAnimationFrame(gameLoop);
+        }
+
+        function formatTime(sec) {
+            const mins = Math.floor(sec / 60);
+            const secs = sec % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function updateHUD() {
+            if (!player) return;
+            document.getElementById('hud-level').innerText = player.level;
+            
+            const expPct = Math.min(100, Math.max(0, (player.exp / player.nextExp) * 100));
+            document.getElementById('hud-exp-bar').style.width = `${expPct}%`;
+
+            const hpPct = Math.min(100, Math.max(0, (player.hp / player.maxHp) * 100));
+            document.getElementById('hud-hp-bar').style.width = `${hpPct}%`;
+            document.getElementById('hud-hp-text').innerText = `${Math.ceil(Math.max(0, player.hp))}/${player.maxHp}`;
+        }
+
+        function renderStars(count, max = 4) {
+            if (count >= 5) return '🔥 進化超武';
+            let str = '';
+            for (let i = 1; i <= max; i++) str += i <= count ? '⭐' : '☆';
+            return `${str} (${count}/${max}星)`;
+        }
+
+        function levelUp() {
+            isPaused = true;
+            AudioEngine.playLevelUp();
+            player.level++;
+            player.exp -= player.nextExp;
+            player.nextExp = Math.floor(player.nextExp * 1.35) + 10;
+
+            const availableChoices = [];
+            const mainW = player.equippedWeapon;
+
+            // Calculate current active & passive skill counts
+            let activeCount = 1; // Main weapon takes 1 active slot
+            let passiveCount = 0;
+
+            IN_GAME_SKILLS.filter(s => s.category === 'active').forEach(s => {
+                if ((inGameSkills[`${s.id}Stars`] || 0) > 0) activeCount++;
+            });
+            IN_GAME_SKILLS.filter(s => s.category === 'passive').forEach(s => {
+                if ((inGameSkills[`${s.id}Stars`] || 0) > 0) passiveCount++;
+            });
+
+            const activeSlotsFull = activeCount >= 5;
+            const passiveSlotsFull = passiveCount >= 6;
+
+            // Main Weapon Evolution
+            const pairedPassiveMain = mainW.pairPassive;
+            const hasMainPassive = (inGameSkills[`${pairedPassiveMain}Stars`] || 0) > 0;
+            if (inGameSkills.mainWeaponStars >= 4 && !inGameSkills.mainWeaponEvolved && hasMainPassive) {
+                availableChoices.push({
+                    type: 'evo_main', id: 'evo_main', name: `🔥 ${mainW.evoName}`, icon: mainW.evoIcon,
+                    desc: `【超武進化】極致打擊感，輸出與範圍大幅加倍升級！`, isEvo: true
+                });
+            } else if (inGameSkills.mainWeaponStars < 4) {
+                availableChoices.push({
+                    type: 'main_weapon', id: 'main_weapon', name: `${mainW.name} 強化`, icon: mainW.icon,
+                    desc: `提升 ${mainW.name} 的攻擊範圍與傷威力`, stars: inGameSkills.mainWeaponStars
+                });
+            }
+
+            // Active Skills
+            IN_GAME_SKILLS.filter(s => s.category === 'active').forEach(act => {
+                const curStar = inGameSkills[`${act.id}Stars`] || 0;
+                const isEvo = inGameSkills[`${act.id}Evolved`];
+                const hasPair = (inGameSkills[`${act.pairPassive}Stars`] || 0) > 0;
+
+                if (curStar >= 4 && !isEvo && hasPair) {
+                    availableChoices.push({
+                        type: 'evo_active', id: act.id, name: `🔥 ${act.evoName}`, icon: act.evoIcon,
+                        desc: `【超武進化】獲得終極形態，威力極致突破！`, isEvo: true
+                    });
+                } else if (curStar > 0 && curStar < 4) {
+                    // Already owned active skill: Can upgrade regardless of capacity!
+                    availableChoices.push({
+                        type: 'active', id: act.id, name: act.name, icon: act.icon, desc: act.desc, stars: curStar
+                    });
+                } else if (curStar === 0 && !activeSlotsFull && curStar < 4) {
+                    // New active skill: Allowed only if active slots are not full!
+                    availableChoices.push({
+                        type: 'active', id: act.id, name: act.name, icon: act.icon, desc: act.desc, stars: curStar
+                    });
+                }
+            });
+
+            // Passives
+            IN_GAME_SKILLS.filter(s => s.category === 'passive').forEach(pass => {
+                const currentStar = inGameSkills[`${pass.id}Stars`] || 0;
+                if (currentStar > 0 && currentStar < 4) {
+                    // Already owned passive: Can upgrade regardless of capacity!
+                    availableChoices.push({
+                        type: 'passive', id: pass.id, name: pass.name, icon: pass.icon, desc: pass.desc, synergy: pass.synergy, stars: currentStar
+                    });
+                } else if (currentStar === 0 && !passiveSlotsFull && currentStar < 4) {
+                    // New passive skill: Allowed only if passive slots are not full!
+                    availableChoices.push({
+                        type: 'passive', id: pass.id, name: pass.name, icon: pass.icon, desc: pass.desc, synergy: pass.synergy, stars: currentStar
+                    });
+                }
+            });
+
+            const shuffled = [...availableChoices].sort(() => 0.5 - Math.random());
+            const choices = shuffled.slice(0, 3);
+
+            const container = document.getElementById('skills-container');
+            container.innerHTML = '';
+
+            choices.forEach(choice => {
+                const card = document.createElement('div');
+                const isEvo = choice.isEvo;
+                const isPassive = choice.type === 'passive';
+
+                card.className = `p-5 rounded-2xl border cursor-pointer transition transform hover:scale-105 active:scale-95 flex flex-col justify-between ${
+                    isEvo ? 'bg-gradient-to-b from-amber-950 via-rose-950 to-slate-950 border-amber-400 card-evo-glow' :
+                    isPassive ? 'bg-gradient-to-b from-sky-950/80 via-slate-900 to-slate-950 border-sky-500/50 hover:border-sky-400 shadow-lg' :
+                    'bg-gradient-to-b from-rose-950/80 via-slate-900 to-slate-950 border-rose-500/50 hover:border-rose-400 shadow-lg'
+                }`;
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-4xl">${choice.icon}</span>
+                            <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${
+                                isEvo ? 'bg-amber-500 text-slate-950 font-black animate-pulse' :
+                                isPassive ? 'bg-sky-500/20 text-sky-300 border border-sky-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                            }">
+                                ${isEvo ? '🔥 突破超武' : isPassive ? '🛡 輔助能力' : '⚔️ 主動技能'}
+                            </span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-1">${choice.name}</h3>
+                        <div class="text-xs font-bold text-amber-300 mb-2">${isEvo ? '🔥【進化型態】' : renderStars(choice.stars)}</div>
+                        <p class="text-xs text-slate-300 leading-relaxed mb-2">${choice.desc}</p>
+                        ${choice.synergy ? `<div class="text-[10px] font-semibold text-amber-300 bg-amber-500/10 px-2 py-1 rounded border border-amber-500/20"><i class="fa-solid fa-link me-1"></i>${choice.synergy}</div>` : ''}
+                    </div>
+                    <button class="mt-4 w-full py-2.5 rounded-xl font-bold text-sm transition ${
+                        isEvo ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black' :
+                        isPassive ? 'bg-sky-600 hover:bg-sky-500 text-white' : 'bg-rose-600 hover:bg-rose-500 text-white'
+                    }">
+                        ${isEvo ? '解鎖超武進化' : '升級 (+1星)'}
+                    </button>
+                `;
+
+                card.onclick = () => applySkillChoice(choice);
+                container.appendChild(card);
+            });
+
+            levelModal.classList.remove('hidden');
+        }
+
+        function applySkillChoice(choice) {
+            if (choice.type === 'evo_main') {
+                inGameSkills.mainWeaponEvolved = true;
+                inGameSkills.mainWeaponStars = 5;
+            } else if (choice.type === 'main_weapon') {
+                inGameSkills.mainWeaponStars++;
+            } else if (choice.type === 'evo_active') {
+                inGameSkills[`${choice.id}Evolved`] = true;
+                inGameSkills[`${choice.id}Stars`] = 5;
+            } else if (choice.type === 'active') {
+                inGameSkills[`${choice.id}Stars`] = (inGameSkills[`${choice.id}Stars`] || 0) + 1;
+            } else if (choice.type === 'passive') {
+                inGameSkills[`${choice.id}Stars`] = (inGameSkills[`${choice.id}Stars`] || 0) + 1;
+                if (choice.id === 'max_hp') {
+                    player.maxHp = Math.floor(player.maxHp * 1.25);
+                    player.hp = player.maxHp;
+                }
+            }
+
+            levelModal.classList.add('hidden');
+            isPaused = false;
+
+            if (player.exp >= player.nextExp) {
+                levelUp();
+            } else {
+                gameLoop();
+            }
+        }
+
+        function endGame() {
+            isPaused = true;
+            clearInterval(gameTimerInterval);
+            
+            // Talent Coin Bonus Calculation
+            const talentCoinMult = 1.0 + ((state.talents.t_coin || 0) * 0.1);
+            const totalEarnedCoins = Math.round(sessionCoins * talentCoinMult);
+
+            state.coins += totalEarnedCoins;
+            if (gameKills > state.highScore) state.highScore = gameKills;
+            saveState();
+
+            document.getElementById('end-time').innerText = formatTime(gameTime);
+            document.getElementById('end-kills').innerText = gameKills;
+            document.getElementById('end-coins').innerText = `+${totalEarnedCoins}`;
+
+            gameoverModal.classList.remove('hidden');
+        }
+
+        /* Initial Setup On Window Load */
+        window.onload = function() {
+            loadState();
+        };
+    </script>
+</body>
+</html>
